@@ -1,10 +1,10 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ComponentProps } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../lib/utils'
 
+// 피그마 치수
 const sidebarTabVariants = cva(
-  // 피그마 치수
-  'inline-flex items-center justify-start w-[152px] h-[32px] rounded-[4px] px-[20px] text-[12px] font-normal transition-all duration-200 gap-[10px] outline-none',
+  'inline-flex items-center justify-start w-[152px] h-[32px] rounded-[4px] px-[20px] text-[12px] font-normal transition-all duration-200 gap-[10px] outline-none cursor-pointer',
   {
     variants: {
       status: {
@@ -29,7 +29,7 @@ const sidebarTabVariants = cva(
 )
 
 interface SidebarTabProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  extends ComponentProps<'button'>,
     VariantProps<typeof sidebarTabVariants> {
   label: string
   icon?: React.ReactNode
@@ -39,13 +39,18 @@ const SidebarTab = forwardRef<HTMLButtonElement, SidebarTabProps>(
   ({ className, status, label, icon, ...props }, ref) => {
     return (
       <button
-        className={cn(sidebarTabVariants({ status, className }))}
+        className={cn(sidebarTabVariants({ status }), className)}
         ref={ref}
         disabled={status === 'disabled'}
         {...props}
       >
         {/* 아이콘 */}
-        {icon && <span className="h-4 w-4 flex-shrink-0">{icon}</span>}
+        {icon && (
+          <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
+            {icon}
+          </span>
+        )}
+
         {/* 텍스트 */}
         <span className="truncate text-left">{label}</span>
       </button>
@@ -55,4 +60,4 @@ const SidebarTab = forwardRef<HTMLButtonElement, SidebarTabProps>(
 
 SidebarTab.displayName = 'SidebarTab'
 
-export { SidebarTab }
+export { SidebarTab, sidebarTabVariants }
