@@ -52,7 +52,7 @@
     "vite": "^6.3.5"
   },
   "lint-staged": {
-    "src/**/.{ts,tsx}": [
+    "src/**/*.{ts,tsx}": [
       "npx eslint --fix",
       "npx prettier --write"
     ],
