@@ -64,10 +64,10 @@ jobs:
             for login in $(echo "$REVIEWERS_JSON" | jq -r '.[] | .login'); do
               case "$login" in
                 "chen4023")
-                  MENTIONS="$MENTIONS <@950597490086924368>"
+                  MENTIONS="$MENTIONS <@683563560063991848>"
                   ;;
                 "sysysysyb")
-                  MENTIONS="$MENTIONS <@1419497006753124382>"
+                  MENTIONS="$MENTIONS <@950597490086924368>"
                   ;;
                 "ninanochichi")
                   MENTIONS="$MENTIONS <@1304754118199480381>"

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+npm run lint-staged || {
+  echo "❌ Husky - Pre-Commit 에러 발생!"
+  exit 1
+}
