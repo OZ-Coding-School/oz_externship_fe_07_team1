@@ -4,16 +4,15 @@ import { cn } from '../lib/utils'
 
 const sortingButtonVariants = cva(
   // 피그마 수치
-  'inline-flex items-center justify-center w-[82px] h-fit rounded-sm px-5 py-2.5 text-xs font-normal transition-all duration-200 gap-[10px] outline-none',
+  'inline-flex items-center justify-center w-20 h-10 rounded bg-transparent text-base font-semibold transition-all duration-200 gap-2.5 outline-none tracking-tight leading-relaxed',
   {
     variants: {
       status: {
-        // Default
-        default: 'bg-main-1 text-main-6 hover:bg-grey-2 hover:text-grey-6',
-        // Hover
+        default: 'bg-primary-light text-primary',
+
         hover: 'bg-grey-2 text-grey-6',
-        // Disabled
-        disabled: 'bg-transparent text-grey-4 pointer-events-none',
+
+        disabled: 'bg-transparent text-grey-5 pointer-events-none opacity-100',
       },
     },
     defaultVariants: {
