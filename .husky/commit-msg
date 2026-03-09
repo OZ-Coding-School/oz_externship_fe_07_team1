@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+npx commitlint --edit "$1" || {
+  echo "❌ Husky - commit-msg 에러 발생!"
+  exit 1
+}
