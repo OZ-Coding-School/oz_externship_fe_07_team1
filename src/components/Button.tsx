@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-[4px] text-sm font-medium transition-all focus-visible:outline-none disabled:pointer-events-none',
+  'inline-flex items-center justify-center rounded-sm text-sm font-medium transition-all focus-visible:outline-none disabled:pointer-events-none text-center cursor-pointer h-fit px-9 py-5',
   {
     variants: {
       variant: {
@@ -13,9 +13,8 @@ const buttonVariants = cva(
         ghost: 'bg-transparent text-grey-5 hover:bg-grey-2 active:bg-grey-3',
       },
       size: {
-        default: 'w-[155px] h-[48px]',
-        sm: 'w-[112px] h-[48px]',
-        full: 'w-[478px] h-[52px]',
+        default: '',
+        full: 'w-full',
       },
     },
     defaultVariants: {
@@ -26,17 +25,19 @@ const buttonVariants = cva(
 )
 
 interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  extends ComponentProps<'button'>,
     VariantProps<typeof buttonVariants> {}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, children, ...props }, ref) => {
     return (
       <button
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size }), className)}
         ref={ref}
         {...props}
-      />
+      >
+        {children}
+      </button>
     )
   }
 )
