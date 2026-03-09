@@ -4,7 +4,7 @@ import { cn } from '../lib/utils'
 
 const sortingButtonVariants = cva(
   // 피그마 수치
-  'inline-flex items-center justify-center w-[82px] h-[42px] rounded-[4px] px-[20px] text-[12px] font-normal transition-all duration-200 gap-[10px] outline-none',
+  'inline-flex items-center justify-center w-[82px] h-fit rounded-sm px-5 py-2.5 text-xs font-normal transition-all duration-200 gap-[10px] outline-none',
   {
     variants: {
       status: {
