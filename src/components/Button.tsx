@@ -13,9 +13,9 @@ const buttonVariants = cva(
         ghost: 'bg-transparent text-grey-5 hover:bg-grey-2 active:bg-grey-3',
       },
       size: {
-        default: 'w-[155px] h-[48px]',
-        sm: 'w-[112px] h-[48px]',
-        full: 'w-[478px] h-[52px]',
+        default: '',
+        sm: 'px-4 py-2',
+        full: 'w-full',
       },
     },
     defaultVariants: {
@@ -24,7 +24,7 @@ const buttonVariants = cva(
     },
   }
 )
-
+//ㅇ
 interface ButtonProps
   extends ComponentProps<'button'>,
     VariantProps<typeof buttonVariants> {}
