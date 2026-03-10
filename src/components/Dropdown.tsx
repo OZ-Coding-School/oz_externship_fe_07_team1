@@ -2,79 +2,84 @@ import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '../lib/utils'
 
-const options = [
-  'Select 01',
-  'Select 02',
-  'Select 03',
-  'Select 04',
-  '기타(직접입력)',
-]
+interface DropdownProps {
+  options?: string[]
+  placeholder?: string
+  onSelect?: (value: string) => void
+}
 
-export default function Dropdown() {
+export default function Dropdown({
+  options = [
+    'Select 01',
+    'Select 02',
+    'Select 03',
+    'Select 04',
+    '기타(직접입력)',
+  ],
+  placeholder = '해당되는 항목을 선택해 주세요.',
+  onSelect,
+}: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [selected, setSelected] = useState('해당되는 항목을 선택해 주세요.')
+  const [selected, setSelected] = useState(placeholder)
   const [customText, setCustomText] = useState('')
 
   const isCustomSelected = selected === '기타(직접입력)'
 
   return (
-    <div className="relative inline-block h-12 w-72">
-      {/*Default */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="bg-surface-default border-gray-disabled flex h-12 w-72 items-center justify-between rounded border px-4 py-2.5 text-sm hover:bg-gray-100"
-        >
-          <span className="text-text-disabled">{selected}</span>
-          <ChevronDown className="text-gray-disabled h-5 w-5" />
-        </button>
-      )}
+    /* 최상단 컨테이너 */
+    <div className="flex w-72 flex-col gap-0">
+      {/* 상단 버튼 */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          'bg-surface-default flex h-12 w-72 items-center justify-between rounded border px-4 py-2.5 text-sm transition-all outline-none',
+          isOpen
+            ? 'border-primary-400 text-text-main font-medium'
+            : 'text-text-disabled border-gray-500'
+        )}
+      >
+        <span>{selected}</span>
+        <ChevronDown
+          className={cn(
+            'h-5 w-5 transition-transform',
+            isOpen ? 'text-primary-400 rotate-180' : 'text-gray-500'
+          )}
+        />
+      </button>
 
-      {/* 컨데이너 */}
+      {/* 하단 리스트/입력창 컨테이너 */}
       {isOpen && (
         <div
-          className="bg-surface-default shadow-box absolute top-0 left-0 z-10 flex w-82 flex-col items-center rounded border py-5"
+          className="shadow-box bg-surface-default mt-1 flex w-72 flex-col rounded border border-gray-500 py-1"
           style={{
-            height: '628px',
-            backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='5' ry='5' stroke='%239747FF' stroke-width='1' stroke-dasharray='10%2c 5'/%3e%3c/svg%3e")`,
-            border: 'none',
+            height: isCustomSelected ? 'auto' : '270px',
           }}
         >
-          {/* Active Title */}
-          <div
-            onClick={() => setIsOpen(false)}
-            className="border-primary-400 mb-1 flex h-12 w-72 cursor-pointer items-center justify-between rounded border px-4 py-2.5 text-sm font-medium"
-          >
-            <span className="text-text-main">{selected}</span>
-            <ChevronDown className="text-primary-400 h-5 w-5 rotate-180" />
-          </div>
-
-          {/* Option List */}
-          <ul className="flex flex-col gap-1">
+          {/* 옵션 리스트 */}
+          <ul className="scrollbar-hide flex flex-col gap-2.5 overflow-y-auto p-1">
             {options.map((option) => (
               <li
                 key={option}
                 onClick={() => {
                   setSelected(option)
+                  if (onSelect) onSelect(option)
                   if (option !== '기타(직접입력)') setIsOpen(false)
                 }}
-                style={{ width: '278px' }}
                 className={cn(
-                  'flex h-12 cursor-pointer items-center justify-between rounded px-3 py-2 text-sm transition-colors',
+                  'flex h-12 w-full shrink-0 cursor-pointer items-center justify-between px-4 py-2.5 text-sm transition-colors',
                   selected === option
                     ? 'text-primary-default font-semibold'
                     : 'text-text-main',
-                  // 호버 시에만 배경색
                   'hover:bg-primary-100'
                 )}
               >
                 {option}
-                {/* Check Icon */}
+                {/* 체크 아이콘 */}
                 {selected === option && (
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
                       d="M13.3334 4L6.00008 11.3333L2.66675 8"
-                      stroke="#6201E0"
+                      stroke="currentColor"
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -85,23 +90,23 @@ export default function Dropdown() {
             ))}
           </ul>
 
-          {/* Custom Input Box */}
+          {/* 기타 직접입력 박스 */}
           {isCustomSelected && (
-            <div className="mt-1 flex w-72 flex-col gap-1">
+            <div className="mt-1 flex w-full flex-col px-1 pb-1">
               <div className="flex flex-col gap-1 rounded border border-gray-500 p-1">
-                {/* 텍스트 박스 타이틀 */}
-                <div className="text-gray-primary flex h-12 items-center px-4 text-sm font-normal">
+                {/* 입력창 타이틀 */}
+                <div className="text-text-main flex h-12 items-center px-4 text-sm font-normal">
                   기타(직접입력)
                 </div>
                 {/* 텍스트 입력 */}
-                <div className="border-gray-disabled flex flex-col rounded border px-3 pt-1 pb-20">
+                <div className="border-gray-250 flex flex-col rounded border px-3 pt-1 pb-20">
                   <textarea
                     value={customText}
                     onChange={(e) =>
                       setCustomText(e.target.value.slice(0, 100))
                     }
                     placeholder="탈퇴 사유를 입력해주세요."
-                    className="text-text-main placeholder:text-text-disabled h-8 w-full resize-none bg-transparent text-sm outline-none"
+                    className="placeholder:text-text-disabled text-text-main h-8 w-full resize-none bg-transparent text-sm outline-none"
                   />
                 </div>
                 {/* 글자수 카운트 */}

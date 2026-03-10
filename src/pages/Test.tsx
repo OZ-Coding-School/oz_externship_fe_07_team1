@@ -6,20 +6,20 @@ function Test() {
     <div className="bg-primary-100 flex h-dvh flex-col items-center gap-10 overflow-y-auto p-10">
       <h1 className="text-4xl font-bold text-gray-700">Dropdown UI Test</h1>
 
-      <TestWrapper label="Dropdown State Check (Left: Normal / Right: Custom Input)">
-        <div className="flex items-start gap-24 pb-80">
-          {/* 왼쪽 드롭다운 */}
-          <div className="flex flex-col gap-3">
-            <span className="text-sm font-medium text-gray-600">
-              Left: Default Select
+      <TestWrapper label="Dropdown State Check">
+        <div className="flex min-h-[600px] w-full items-start gap-24 p-5">
+          {/* 기본 */}
+          <div className="w-72">
+            <span className="mb-3 block text-sm font-medium text-gray-600">
+              Default Select
             </span>
             <Dropdown />
           </div>
 
-          {/* 오른쪽 */}
-          <div className="flex flex-col gap-3">
-            <span className="text-sm font-medium text-gray-600">
-              Right: With Textbox
+          {/* 직접입력 */}
+          <div className="w-72">
+            <span className="mb-3 block text-sm font-medium text-gray-600">
+              With Textbox
             </span>
             <Dropdown />
           </div>
