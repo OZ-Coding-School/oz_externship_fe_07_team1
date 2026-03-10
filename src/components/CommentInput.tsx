@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { CommentButton } from './CommentButton'
 import { cn } from '../lib/utils'
 
@@ -8,6 +8,15 @@ interface CommentInputProps {
 
 export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   const [content, setContent] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      const nextHeight = Math.max(120, textareaRef.current.scrollHeight)
+      textareaRef.current.style.height = `${nextHeight}px`
+    }
+  }, [content])
 
   const handleSubmit = () => {
     if (!content.trim()) return // 입력값이 없거나 공백인 경우 무시
@@ -18,11 +27,13 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   return (
     <div
       className={cn(
-        'border-grey-3 bg-grey-1 focus-within:border-primary w-full rounded-md border p-4 transition-all focus-within:bg-white'
+        'flex w-full flex-col gap-2.5 rounded-xl p-5',
+        'border-gray-250 bg-surface-default focus-within:border-primary-default border transition-all'
       )}
     >
       <textarea
-        className="text-grey-6 placeholder:text-grey-4 min-h-[80px] w-full resize-none bg-transparent text-sm outline-none"
+        ref={textareaRef} // 높이 자동조절
+        className="text-text-main placeholder:text-gray-250 min-h-30 w-full resize-none bg-transparent text-sm leading-[1.5] outline-none"
         placeholder="개인정보를 공유 및 요청하거나, 명예 훼손, 무단 광고, 불법 정보 유포시 모니터링 후 삭제될 수 있습니다."
         value={content}
         onChange={(e) => setContent(e.target.value)}

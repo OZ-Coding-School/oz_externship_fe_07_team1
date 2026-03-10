@@ -3,18 +3,16 @@ import { cn } from '../lib/utils'
 
 type CommentButtonProps = ComponentProps<'button'>
 export const CommentButton = forwardRef<HTMLButtonElement, CommentButtonProps>(
-  ({ children, ...props }, ref) => {
+  ({ className, children, ...props }, ref) => {
     return (
       <button
         ref={ref}
         className={cn(
-          'inline-flex cursor-pointer items-center justify-center transition-all focus-visible:outline-none disabled:pointer-events-none',
-
-          'h-9 rounded-full px-6 text-sm font-medium',
-
-          'bg-primary hover:bg-primary-hover active:bg-primary-active text-white',
-
-          'disabled:bg-grey-3 disabled:text-grey-5'
+          'inline-flex cursor-pointer items-center justify-center border transition-all focus-visible:outline-none disabled:pointer-events-none',
+          'h-10 w-20 rounded-full text-sm font-medium',
+          'bg-primary-100 border-primary-default text-primary-default hover:bg-primary-200 active:bg-primary-active active:text-white',
+          'disabled:border-gray-250 disabled:text-text-disabled disabled:bg-gray-200',
+          className
         )}
         {...props}
       >
