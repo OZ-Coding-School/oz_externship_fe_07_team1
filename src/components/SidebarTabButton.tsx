@@ -8,15 +8,12 @@ const sidebarTabVariants = cva(
   {
     variants: {
       status: {
-        default: 'bg-transparent text-grey-5 font-semibold gap-2.5',
-
-        hover: 'bg-primary-light text-primary font-semibold gap-2.5',
-
+        default:
+          'bg-transparent text-gray-400 font-semibold gap-2.5 hover:bg-primary-100 hover:text-primary-default',
         active:
-          'bg-transparent text-primary font-semibold gap-2.5 before:absolute before:left-0 before:top-0 before:h-full before:w-0.75 before:bg-primary',
-
+          'bg-transparent text-primary-default font-semibold gap-2.5 before:absolute before:left-0 before:top-0 before:h-full before:w-0.75 before:bg-primary-default before:rounded-sm',
         disabled:
-          'bg-grey-2 text-grey-4 font-normal gap-2.5 pointer-events-none',
+          'bg-gray-200 text-gray-disabled font-normal gap-2.5 pointer-events-none',
       },
     },
     defaultVariants: {
