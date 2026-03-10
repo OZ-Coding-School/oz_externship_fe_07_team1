@@ -26,6 +26,7 @@ export default {
         'hotfix', // 운영 중 긴급 버그 수정
         'deprecated', // 더 이상 사용하지 않거나 제거 예정인 코드 처리
         'design', // UI/UX, 퍼블리싱 등 화면 관련 디자인 작업
+        // ex) 로그인 페이지 ui 수정
       ],
     ],
     // subject는 비워둘 수 없습니다.
