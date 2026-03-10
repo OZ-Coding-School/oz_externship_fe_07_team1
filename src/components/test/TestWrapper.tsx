@@ -5,9 +5,9 @@ interface TestWrapperProps {
 
 function TestWrapper({ label, children }: TestWrapperProps) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-xl border-4 border-solid border-pink-300 bg-white p-8">
+    <div className="border-primary-400 flex flex-col items-center gap-4 rounded-xl border-4 border-solid bg-white p-8">
       <h3 className="text-2xl font-medium">{label}</h3>
-      <div>{children}</div>
+      <div className="flex gap-4">{children}</div>
     </div>
   )
 }
