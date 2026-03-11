@@ -42,4 +42,15 @@
   --shadow-box: 0 4px 4px #00000025;
   --shadow-modal: 0 0 16px #a0a0a025;
   --shadow-toast: 4px 4px 4px #83838325;
+
+  /* ---------- Custom Sizes ---------- */
+
+  /* Scrollbar Settings */
+  --spacing-scroll-w: 2px;
+}
+@utility scrollbar-w-2 {
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
 }
