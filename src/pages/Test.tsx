@@ -1,5 +1,5 @@
 import TestWrapper from '../components/test/TestWrapper'
-import { useToast } from '../hooks'
+import { useToast } from '../hooks' // hooks/index.ts가 있는 구조니 이거면 됩니다
 
 function Test() {
   const { showToast } = useToast()
@@ -9,7 +9,6 @@ function Test() {
       <h1 className="text-4xl font-bold text-gray-700">
         Test 페이지 ^~^ (UI 확인용)
       </h1>
-
       {/* 기본 테스트 */}
       <TestWrapper label="Default Toast (248px)">
         <button
@@ -18,8 +17,8 @@ function Test() {
         >
           기본 토스트 확인
         </button>
-      </TestWrapper>
-
+      </TestWrapper>{' '}
+      {/* 👈 아까 빠졌던 닫는 태그 추가 */}
       {/* 변경 완료 테스트 */}
       <TestWrapper label="Complete Toast (396px)">
         <button

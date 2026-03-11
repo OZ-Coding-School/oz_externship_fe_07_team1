@@ -3,7 +3,7 @@ import { useToastStore } from '../../../store/useToastStore'
 import ToastItem from './ToastItem'
 
 export default function ToastContainer() {
-  // 스토어에서 상태
+  // 스토어 상태
   const { isOpen, type, hideToast } = useToastStore()
 
   // 토스트 타이머
