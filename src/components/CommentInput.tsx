@@ -27,7 +27,7 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   return (
     <div
       className={cn(
-        'flex w-full flex-col gap-2.5 rounded-xl p-5',
+        'flex w-full gap-10 rounded-xl p-5',
         'border-gray-250 bg-surface-default focus-within:border-primary-default border transition-all'
       )}
     >
@@ -39,7 +39,7 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
         onChange={(e) => setContent(e.target.value)}
       />
 
-      <div className="flex justify-end">
+      <div className="flex items-end">
         <CommentButton disabled={!content.trim()} onClick={handleSubmit}>
           등록
         </CommentButton>
