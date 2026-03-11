@@ -4,23 +4,28 @@ import { BrowserRouter } from 'react-router'
 
 import './index.css'
 import App from './App.tsx'
+import { ToastContainer } from './components/common/Toast'
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {
-    // 개발 모드인 경우에는 워커 실행 X
     return
   }
-  const { worker } = await import('./mocks/browser.ts') // 이전에 설정한 브라우저 환경설정 import
+  const { worker } = await import('./mocks/browser.ts')
 
   return worker.start({
-    onUnhandledRequest: 'bypass', // 모킹되지 않은 요청은 실제 서버로 전달
+    onUnhandledRequest: 'bypass',
   })
 }
 
+/* API 준비 렌더링 시작 */
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
+      {/* 라우팅 컨텍스트 */}
       <BrowserRouter>
+        <ToastContainer />
+
+        {/* 메인 */}
         <App />
       </BrowserRouter>
     </StrictMode>
