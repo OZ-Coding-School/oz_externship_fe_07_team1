@@ -1,9 +1,10 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../lib/utils'
 import type { ComponentProps } from 'react'
+import { ThumbsUp } from 'lucide-react'
 
 const likeButtonVariants = cva(
-  'px-4 py-2.5 flex gap-2.5 border border-solid text-xs',
+  'px-4 py-2.5 flex gap-1 border border-solid text-xs rounded-full items-center cursor-pointer',
   {
     variants: {
       status: {
@@ -19,13 +20,25 @@ const likeButtonVariants = cva(
 
 interface likeButtonProps
   extends ComponentProps<'button'>,
-    VariantProps<typeof likeButtonVariants> {}
+    VariantProps<typeof likeButtonVariants> {
+  likeCount?: number
+}
 
-function LikeButton({ className, children, ...props }: likeButtonProps) {
+function LikeButton({
+  status = 'disabled',
+  likeCount = 0,
+  className,
+  ...props
+}: likeButtonProps) {
   return (
-    <button className={cn(likeButtonVariants, className)} {...props}>
-      {/* 아이콘 적용 */}
-      {children}
+    <button
+      className={cn(likeButtonVariants({ status }), className)}
+      {...props}
+    >
+      <ThumbsUp
+        className={cn('size-4.5', status === 'disabled' && 'text-gray-500')}
+      />{' '}
+      {likeCount}
     </button>
   )
 }
