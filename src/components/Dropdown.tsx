@@ -62,7 +62,7 @@ export default function Dropdown({
           )}
         >
           {/* 옵션 리스트 */}
-          <ul className="scrollbar-hide flex flex-col gap-2.5 overflow-y-auto p-1">
+          <ul className="scrollbar scrollbar-w-2 scrollbar-thumb-gray-disabled scrollbar-track-transparent scrollbar-thumb-rounded-sm flex max-h-60 flex-col gap-2.5 overflow-y-auto p-1">
             {options.map((option) => (
               <li
                 key={option}
@@ -72,11 +72,10 @@ export default function Dropdown({
                   if (option !== '기타(직접입력)') setIsOpen(false)
                 }}
                 className={cn(
-                  'flex h-12 w-full shrink-0 cursor-pointer items-center justify-between rounded-sm px-4 py-2.5 text-sm transition-colors',
+                  'hover:bg-primary-100 flex h-12 w-full shrink-0 cursor-pointer items-center justify-between rounded-sm px-4 py-2.5 text-sm transition-colors',
                   selected === option
                     ? 'text-primary-default font-semibold'
-                    : 'text-text-main',
-                  'hover:bg-primary-100'
+                    : 'text-text-main'
                 )}
               >
                 {option}
