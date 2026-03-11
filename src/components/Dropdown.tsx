@@ -24,15 +24,17 @@ export default function Dropdown({
   const [customText, setCustomText] = useState('')
 
   const isCustomSelected = selected === '기타(직접입력)'
+  const currentOptionNum = options.length
 
   return (
     /* 최상단 컨테이너 */
-    <div className="flex w-72 flex-col gap-0">
+    <div className="flex w-full flex-col gap-0">
       {/* 상단 버튼 */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'bg-surface-default flex h-12 w-72 items-center justify-between rounded border px-4 py-2.5 text-sm transition-all outline-none',
+          'bg-surface-default flex h-12 w-full items-center justify-between rounded border px-4 py-2.5 text-sm transition-all outline-none',
           isOpen
             ? 'border-primary-400 text-text-main font-medium'
             : 'text-text-disabled border-gray-500'
@@ -50,10 +52,14 @@ export default function Dropdown({
       {/* 하단 리스트/입력창 컨테이너 */}
       {isOpen && (
         <div
-          className="shadow-box bg-surface-default mt-1 flex w-72 flex-col rounded border border-gray-500 py-1"
-          style={{
-            height: isCustomSelected ? 'auto' : '270px',
-          }}
+          className={cn(
+            'shadow-box bg-surface-default mt-1 flex w-full flex-col rounded border border-gray-500 py-1',
+            isCustomSelected
+              ? 'h-auto'
+              : currentOptionNum <= 5
+                ? 'h-fit'
+                : 'max-h-64'
+          )}
         >
           {/* 옵션 리스트 */}
           <ul className="scrollbar-hide flex flex-col gap-2.5 overflow-y-auto p-1">
@@ -66,7 +72,7 @@ export default function Dropdown({
                   if (option !== '기타(직접입력)') setIsOpen(false)
                 }}
                 className={cn(
-                  'flex h-12 w-full shrink-0 cursor-pointer items-center justify-between px-4 py-2.5 text-sm transition-colors',
+                  'flex h-12 w-full shrink-0 cursor-pointer items-center justify-between rounded-sm px-4 py-2.5 text-sm transition-colors',
                   selected === option
                     ? 'text-primary-default font-semibold'
                     : 'text-text-main',
@@ -92,27 +98,27 @@ export default function Dropdown({
 
           {/* 기타 직접입력 박스 */}
           {isCustomSelected && (
-            <div className="mt-1 flex w-full flex-col px-1 pb-1">
-              <div className="flex flex-col gap-1 rounded border border-gray-500 p-1">
+            <div className="mt-1 flex w-full flex-col border-t border-gray-100 px-1 pb-1">
+              <div className="bg-surface-sub mt-1 flex flex-col gap-1 rounded p-2">
                 {/* 입력창 타이틀 */}
-                <div className="text-text-main flex h-12 items-center px-4 text-sm font-normal">
+                <div className="text-text-main flex h-8 items-center px-2 text-sm font-semibold">
                   기타(직접입력)
                 </div>
                 {/* 텍스트 입력 */}
-                <div className="border-gray-250 flex flex-col rounded border px-3 pt-1 pb-20">
+                <div className="bg-surface-default border-gray-250 flex flex-col rounded border px-3 py-2">
                   <textarea
                     value={customText}
                     onChange={(e) =>
                       setCustomText(e.target.value.slice(0, 100))
                     }
                     placeholder="탈퇴 사유를 입력해주세요."
-                    className="placeholder:text-text-disabled text-text-main h-8 w-full resize-none bg-transparent text-sm outline-none"
+                    className="placeholder:text-text-disabled text-text-main h-20 w-full resize-none bg-transparent text-sm outline-none"
                   />
+                  {/* 글자수 카운트 */}
+                  <span className="text-text-disabled mt-1 text-right text-xs">
+                    {customText.length}/100
+                  </span>
                 </div>
-                {/* 글자수 카운트 */}
-                <span className="text-text-disabled pr-1 text-right text-xs">
-                  {customText.length}/100
-                </span>
               </div>
             </div>
           )}
