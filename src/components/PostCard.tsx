@@ -1,5 +1,6 @@
 import { ThumbsUp } from 'lucide-react'
 import { postCardData } from '../mocks/data/postCardData'
+import { formatCreatedTime } from '../utils/time'
 
 function PostCard({
   category = postCardData.categoryName,
@@ -10,7 +11,10 @@ function PostCard({
   commentCount = postCardData.commentCount,
   authorName = postCardData.author.nickname,
   authorProfileImg = postCardData.author.profileImgUrl,
+  createdAt = postCardData.createdAt,
 }) {
+  const dateString = formatCreatedTime(createdAt)
+
   return (
     <div className="hover:bg-primary-50 flex h-56 w-full cursor-pointer gap-10 rounded-xl p-6 transition-all duration-200">
       <div className="flex w-full flex-col justify-between">
@@ -52,7 +56,7 @@ function PostCard({
             </div>
 
             {/* 작성 시기 */}
-            <span className="text-xs text-gray-400">1시간 전</span>
+            <span className="text-xs text-gray-400">{dateString}</span>
           </div>
         </div>
       </div>
