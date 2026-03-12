@@ -11,7 +11,7 @@ export const postCardData = {
   commentCount: 6,
   viewCount: 60,
   likeCount: 156,
-  createdAt: '2025-10-30T14:01:57.505250+09:00',
-  updatedAt: '2025-10-30T14:01:57.505250+09:00',
+  createdAt: '2026-03-12T14:01:57.505250+09:00',
+  updatedAt: '2026-03-12T14:01:57.505250+09:00',
   categoryName: '구인/협업',
 }
