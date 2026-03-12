@@ -24,8 +24,8 @@ export default function ToastItem({
   }, [id, hideToast])
 
   return (
-    <div className="animate-in fade-in slide-in-from-top-2 fill-mode-forwards duration-300 ease-out">
-      {/* 전송 완료 안내 (type: default) */}
+    <div className="animate-toast-in">
+      {/* 전송 완료 안내 */}
       {(type === 'default' || type === 'success') && (
         <div className="shadow-toast bg-surface-sub flex h-fit w-62 items-center gap-3 rounded border border-gray-200 px-4 py-3">
           <div className="bg-answer-active flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
