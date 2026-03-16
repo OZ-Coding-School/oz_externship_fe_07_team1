@@ -34,10 +34,8 @@ export default function Dropdown({
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'bg-surface-default flex h-12 w-full items-center justify-between rounded border px-4 py-2.5 text-sm transition-all outline-none',
-          isOpen
-            ? 'border-primary-400 text-text-main font-medium'
-            : 'text-text-disabled border-gray-500'
+          'flex h-10 w-full items-center justify-between px-4 text-sm transition-all outline-none',
+          isOpen ? 'text-text-main font-medium' : 'text-text-disabled'
         )}
       >
         <span>{selected}</span>
@@ -49,11 +47,11 @@ export default function Dropdown({
         />
       </button>
 
-      {/* 하단 리스트/입력창 컨테이너 */}
+      {/* 하단 리스트/입력창 컨테이너 - absolute를 주어 레이아웃 깨짐 방지 */}
       {isOpen && (
         <div
           className={cn(
-            'shadow-box bg-surface-default mt-1 flex w-full flex-col rounded border border-gray-500 py-1',
+            'shadow-box bg-surface-default absolute top-11 z-50 flex w-full flex-col rounded border border-gray-500 py-1',
             isCustomSelected
               ? 'h-auto'
               : currentOptionNum <= 5

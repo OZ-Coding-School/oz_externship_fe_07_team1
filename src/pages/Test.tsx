@@ -1,32 +1,28 @@
-import TestWrapper from '../components/test/TestWrapper'
-import { useToast } from '../hooks'
+import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
+import EditorHeader from '../components/editor/EditorHeader'
+import { Button } from '../components/Button'
 
 function Test() {
-  const { showToast } = useToast()
-
   return (
-    <div className="bg-primary-100 flex h-dvh flex-col items-center gap-10 overflow-y-auto p-10">
-      <h1 className="text-4xl font-bold text-gray-700">
-        Test 페이지 ^~^ (UI 확인용)
-      </h1>
-      {/* 기본 테스트 */}
-      <TestWrapper label="Default Toast (248px)">
-        <button
-          onClick={() => showToast('default')}
-          className="bg-primary-default rounded-md px-4 py-2 text-white transition-transform active:scale-95"
-        >
-          기본 토스트 확인
-        </button>
-      </TestWrapper>{' '}
-      {/* 변경 완료 테스트 */}
-      <TestWrapper label="Complete Toast (396px)">
-        <button
-          onClick={() => showToast('complete')}
-          className="bg-answer-active rounded-md px-4 py-2 text-white transition-transform active:scale-95"
-        >
-          비밀번호 변경 완료 확인
-        </button>
-      </TestWrapper>
+    <div className="flex min-h-screen flex-col items-center overflow-y-auto bg-gray-50 py-20">
+      <div className="flex flex-col gap-13">
+        {/* 헤더 */}
+        <EditorHeader />
+
+        {/* 에디터 및 버튼 */}
+        <div className="flex flex-col gap-5">
+          <MarkdownEditor />
+
+          <div className="flex justify-end pt-5">
+            <Button
+              variant="fill"
+              className="h-14 w-[142px] rounded-lg text-lg font-bold"
+            >
+              등록하기
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
