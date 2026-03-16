@@ -203,11 +203,11 @@
   width: 419px !important;
   min-width: 419px !important;
   max-width: 419px !important;
-  height: 525px !important;
   min-height: 525px !important;
-  max-height: 525px !important;
+  height: auto !important;
+  max-height: none !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 0 24px 0 !important;
   background: transparent !important;
   box-sizing: border-box !important;
   overflow: visible !important;
@@ -218,6 +218,12 @@
   letter-spacing: 0.08em !important;
   color: #000000 !important;
   word-break: keep-all !important;
+}
+.custom-editor .w-md-editor-preview .wmde-markdown::after,
+.custom-editor .w-md-editor-preview .wmde-markdown-var::after {
+  content: '';
+  display: block;
+  height: 24px;
 }
 
 .custom-editor .wmde-markdown h1,
