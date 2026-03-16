@@ -47,7 +47,8 @@
   --radius-4_5: 18px;
 }
 
-/* 마크다운 에디터 */
+/* ---------- MarkDown Editor ---------- */
+
 .custom-editor-container {
   /* 전체 바디 */
   width: 944px !important;
@@ -115,6 +116,8 @@
   margin: 0 !important;
   padding: 0 !important;
   background: transparent !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
 
 .custom-editor .w-md-editor-text-pre,
@@ -124,9 +127,9 @@
   width: 417px !important;
   min-width: 417px !important;
   max-width: 417px !important;
-  height: 525px !important;
   min-height: 525px !important;
-  max-height: 525px !important;
+  height: auto !important;
+  max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
@@ -134,7 +137,7 @@
   resize: none !important;
   background: transparent !important;
   box-sizing: border-box !important;
-  overflow: hidden !important;
+  overflow: visible !important;
 
   font-family: 'Montserrat', sans-serif !important;
   font-weight: 400 !important;
@@ -149,35 +152,29 @@
 
 .custom-editor .w-md-editor-text-input,
 .custom-editor textarea {
-  /* 입력 글자 숨김 */
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
+  /* 입력 글자 */
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   caret-color: #000000 !important;
+  overflow: visible !important;
+}
+
+/* 왼쪽 드래그 유지 */
+.custom-editor .w-md-editor-text-input::selection,
+.custom-editor textarea::selection {
+  background: rgba(59, 130, 246, 0.35) !important;
+  color: #000000 !important;
+}
+
+.custom-editor .w-md-editor-text-input::-moz-selection,
+.custom-editor textarea::-moz-selection {
+  background: rgba(59, 130, 246, 0.35) !important;
+  color: #000000 !important;
 }
 
 .custom-editor .w-md-editor-text-pre {
   /* 보이는 글자 */
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-.custom-editor .w-md-editor-text-pre *,
-.custom-editor .token,
-.custom-editor .token.url,
-.custom-editor .token.content,
-.custom-editor .token.title,
-.custom-editor .token.bold,
-.custom-editor .token.italic,
-.custom-editor .token.punctuation,
-.custom-editor .token.list,
-.custom-editor .token.hr,
-.custom-editor .token.code-block,
-.custom-editor .token.image {
-  /* 토큰 색 제거 */
-  color: #000000 !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  text-decoration: none !important;
+  display: none !important;
 }
 
 /* 오른쪽 패널 */
@@ -196,7 +193,8 @@
   border-bottom-right-radius: var(--radius-4_5) !important;
   background: #fafafb !important;
   box-shadow: none !important;
-  overflow: hidden !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
 
 .custom-editor .w-md-editor-preview .wmde-markdown,
@@ -212,7 +210,7 @@
   padding: 0 !important;
   background: transparent !important;
   box-sizing: border-box !important;
-  overflow: hidden !important;
+  overflow: visible !important;
 
   font-family: 'Montserrat', sans-serif !important;
   font-weight: 400 !important;
@@ -299,7 +297,12 @@
 
 .custom-editor .wmde-markdown blockquote {
   /* 인용 숨김 */
-  display: none !important;
+  display: block !important;
+  margin: 0 0 12px 0 !important;
+  padding: 0 0 0 12px !important;
+  border-left: 4px solid #cecece !important;
+  color: #4d4d4d !important;
+  background: transparent !important;
 }
 
 .custom-editor .wmde-markdown ul {
@@ -355,19 +358,34 @@
   border: none !important;
 }
 
-.custom-editor .wmde-markdown pre,
+.custom-editor .wmde-markdown pre {
+  /* 코드 숨김 */
+  display: block !important;
+  padding: 12px !important;
+  border-radius: 6px !important;
+  background: #f4f4f5 !important;
+  overflow-x: auto !important;
+}
+
 .custom-editor .wmde-markdown code {
   /* 코드 숨김 */
-  display: none !important;
+  display: inline !important;
+  background: #f4f4f5 !important;
+  padding: 2px 4px !important;
+  border-radius: 4px !important;
 }
 
 .custom-editor *::-webkit-scrollbar {
-  /* 스크롤 숨김 */
-  display: none !important;
+  width: 6px !important;
+}
+
+.custom-editor *::-webkit-scrollbar-thumb {
+  background: #cecece !important;
+  border-radius: 999px !important;
 }
 
 .custom-editor,
 .custom-editor * {
-  /* 스크롤 숨김 */
-  scrollbar-width: none !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #cecece transparent !important;
 }

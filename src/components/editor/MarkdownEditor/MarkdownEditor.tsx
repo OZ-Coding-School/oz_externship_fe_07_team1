@@ -20,20 +20,23 @@ export default function MarkdownEditor() {
 ***Italic bold text***
 
 > Blockquotes text
--Not numbered list items
--Not numbered list items
--Not numbered list items
+
+- Not numbered list items
+- Not numbered list items
+- Not numbered list items
+
 1. Numbered list items
 2. Numbered list items
 3. Numbered list items
-*Not numbered list items
-*Not numbered list items
-*Not numbered list items
+
+* Not numbered list items
+* Not numbered list items
+* Not numbered list items
 
 ![Image name](${previewImage})
 
 \`\`\`cpp
-std::cout << “Hello World!” << std::endl;
+std::cout << "Hello World!" << std::endl;
 \`\`\`
 `)
 
@@ -71,17 +74,50 @@ std::cout << “Hello World!” << std::endl;
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
     const selectedText = currentValue.slice(start, end)
-    const insertText = selectedText || 'text'
+
+    if (!selectedText) {
+      const insertText = 'text'
+
+      const nextValue =
+        currentValue.slice(0, start) +
+        before +
+        insertText +
+        after +
+        currentValue.slice(end)
+
+      const nextSelectionStart = start + before.length
+      const nextSelectionEnd = start + before.length + insertText.length
+
+      updateSelection(nextValue, nextSelectionStart, nextSelectionEnd)
+      return
+    }
+
+    const beforeText = currentValue.slice(start - before.length, start)
+    const afterText = currentValue.slice(end, end + after.length)
+    const isWrapped = beforeText === before && afterText === after
+
+    if (isWrapped) {
+      const nextValue =
+        currentValue.slice(0, start - before.length) +
+        selectedText +
+        currentValue.slice(end + after.length)
+
+      const nextSelectionStart = start - before.length
+      const nextSelectionEnd = nextSelectionStart + selectedText.length
+
+      updateSelection(nextValue, nextSelectionStart, nextSelectionEnd)
+      return
+    }
 
     const nextValue =
       currentValue.slice(0, start) +
       before +
-      insertText +
+      selectedText +
       after +
       currentValue.slice(end)
 
     const nextSelectionStart = start + before.length
-    const nextSelectionEnd = start + before.length + insertText.length
+    const nextSelectionEnd = end + before.length
 
     updateSelection(nextValue, nextSelectionStart, nextSelectionEnd)
   }
@@ -103,13 +139,34 @@ std::cout << “Hello World!” << std::endl;
     const selectedBlock = currentValue.slice(lineStart, lineEnd)
     const lines = selectedBlock.split('\n')
 
-    const formattedLines =
-      type === 'ul'
-        ? lines.map((line) => `- ${line.replace(/^(- |\* |\d+\. )/, '')}`)
-        : lines.map(
-            (line, index) =>
-              `${index + 1}. ${line.replace(/^(- |\* |\d+\. )/, '')}`
-          )
+    const isUnordered =
+      type === 'ul' &&
+      lines.every((line) => /^(\s*[-*]\s)/.test(line) || line.trim() === '')
+
+    const isOrdered =
+      type === 'ol' &&
+      lines.every((line) => /^(\s*\d+\.\s)/.test(line) || line.trim() === '')
+
+    let formattedLines: string[]
+
+    if (isUnordered || isOrdered) {
+      formattedLines = lines.map((line) =>
+        line.replace(/^(\s*)([-*] |\d+\. )/, '$1')
+      )
+    } else if (type === 'ul') {
+      formattedLines = lines.map((line) => {
+        if (line.trim() === '') return line
+        return `- ${line.replace(/^(\s*)([-*] |\d+\. )/, '')}`
+      })
+    } else {
+      let order = 1
+      formattedLines = lines.map((line) => {
+        if (line.trim() === '') return line
+        const formatted = `${order}. ${line.replace(/^(\s*)([-*] |\d+\. )/, '')}`
+        order += 1
+        return formatted
+      })
+    }
 
     const replacedBlock = formattedLines.join('\n')
 
