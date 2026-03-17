@@ -7,7 +7,7 @@ import { categoryData } from '../mocks/data/categoryData'
 function Test() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [categoryId, setCategoryId] = useState<number | null>(null)
+  const [, setCategoryId] = useState<number | null>(null)
 
   return (
     <div className="flex min-h-screen flex-col items-center overflow-y-auto bg-gray-50 py-20">
