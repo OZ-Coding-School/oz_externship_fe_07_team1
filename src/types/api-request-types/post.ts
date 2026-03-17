@@ -1,0 +1,5 @@
+export interface CreatePostRequest {
+  title: string
+  content: string
+  category_id: number
+}

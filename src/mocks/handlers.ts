@@ -1,8 +1,60 @@
 // handlers.ts
 import { http, HttpResponse } from 'msw'
+import { categoryData } from './data/categoryData'
+import type { CreatePostRequest, CreatePostResponse } from '../types'
+
+let postPk = 1
 
 export const handlers = [
   http.get('/api/hello', () => {
     return HttpResponse.json({ message: 'Hello, world!', code: 200 })
+  }),
+
+  http.get('/api/v1/posts/categories', () => {
+    return HttpResponse.json(categoryData, { status: 200 })
+  }),
+
+  http.post('/api/v1/posts', async ({ request }) => {
+    const body = (await request.json()) as CreatePostRequest
+
+    if (!body.title) {
+      return HttpResponse.json(
+        {
+          error_detail: {
+            title: ['이 필드는 필수 항목입니다.'],
+          },
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!body.content) {
+      return HttpResponse.json(
+        {
+          error_detail: {
+            content: ['이 필드는 필수 항목입니다.'],
+          },
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!body.category_id) {
+      return HttpResponse.json(
+        {
+          error_detail: {
+            category_id: ['이 필드는 필수 항목입니다.'],
+          },
+        },
+        { status: 400 }
+      )
+    }
+
+    const response: CreatePostResponse = {
+      detail: '게시글이 성공적으로 등록되었습니다.',
+      pk: postPk++,
+    }
+
+    return HttpResponse.json(response, { status: 201 })
   }),
 ]

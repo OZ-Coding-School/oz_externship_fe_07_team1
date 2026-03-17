@@ -1,45 +1,24 @@
-import { useRef, useState, type ChangeEvent } from 'react'
+import {
+  useRef,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+} from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import EditorToolbar from './EditorToolbar'
-import previewImage from '../../../assets/images/markdownimage1.png'
 
-export default function MarkdownEditor() {
+interface MarkdownEditorProps {
+  value: string
+  setValue: Dispatch<SetStateAction<string>>
+}
+
+export default function MarkdownEditor({
+  value,
+  setValue,
+}: MarkdownEditorProps) {
   // 에디터
   const editorWrapperRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-
-  // 마크다운
-  const [value, setValue] = useState<string | undefined>(`# h1 title
-## h2 title
-### h3 title
-#### h4 title
-##### h5 title
-###### h6 title
-
-**Bold text**
-*Italic text*
-***Italic bold text***
-
-> Blockquotes text
-
-- Not numbered list items
-- Not numbered list items
-- Not numbered list items
-
-1. Numbered list items
-2. Numbered list items
-3. Numbered list items
-
-* Not numbered list items
-* Not numbered list items
-* Not numbered list items
-
-![Image name](${previewImage})
-
-\`\`\`cpp
-std::cout << "Hello World!" << std::endl;
-\`\`\`
-`)
 
   // textarea 찾기
   const getTextarea = () => {
@@ -256,7 +235,7 @@ std::cout << "Hello World!" << std::endl;
       >
         <MDEditor
           value={value}
-          onChange={setValue}
+          onChange={(nextValue) => setValue(nextValue ?? '')}
           preview="live"
           hideToolbar
           visibleDragbar={false}

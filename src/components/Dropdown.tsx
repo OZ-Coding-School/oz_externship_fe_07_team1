@@ -28,13 +28,13 @@ export default function Dropdown({
 
   return (
     /* 최상단 컨테이너 */
-    <div className="flex w-full flex-col gap-0">
+    <div className="relative flex w-full flex-col gap-0">
       {/* 상단 버튼 */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'flex h-10 w-full items-center justify-between px-4 text-sm transition-all outline-none',
+          'border-gray-disabled flex h-10 w-full items-center justify-between rounded border bg-gray-100 px-4 text-sm transition-all outline-none',
           isOpen ? 'text-text-main font-medium' : 'text-text-disabled'
         )}
       >
@@ -47,7 +47,7 @@ export default function Dropdown({
         />
       </button>
 
-      {/* 하단 리스트/입력창 컨테이너 - absolute를 주어 레이아웃 깨짐 방지 */}
+      {/* 하단 리스트/입력창 컨테이너 */}
       {isOpen && (
         <div
           className={cn(

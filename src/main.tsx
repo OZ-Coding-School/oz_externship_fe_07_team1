@@ -1,13 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import './index.css'
 import App from './App.tsx'
 import { ToastContainer } from './components/common/Toast'
 
+const queryClient = new QueryClient()
+
 async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
+  if (!import.meta.env.DEV) {
     return
   }
   const { worker } = await import('./mocks/browser.ts')
@@ -21,12 +24,14 @@ async function enableMocking() {
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <ToastContainer />
+      <QueryClientProvider client={queryClient}>
+        <ToastContainer />
 
-      <BrowserRouter>
-        {/* 라우팅 로직 */}
-        <App />
-      </BrowserRouter>
+        <BrowserRouter>
+          {/* 라우팅 로직 */}
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
     </StrictMode>
   )
 })
