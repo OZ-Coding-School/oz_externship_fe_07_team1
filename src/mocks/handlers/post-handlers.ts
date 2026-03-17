@@ -12,34 +12,24 @@ export const postHandlers = [
   http.post('/api/v1/posts', async ({ request }) => {
     const body = (await request.json()) as CreatePostRequest
 
+    const errors: Record<string, string[]> = {}
+
     if (!body.title) {
-      return HttpResponse.json(
-        {
-          error_detail: {
-            title: ['이 필드는 필수 항목입니다.'],
-          },
-        },
-        { status: 400 }
-      )
+      errors.title = ['이 필드는 필수 항목입니다.']
     }
 
     if (!body.content) {
-      return HttpResponse.json(
-        {
-          error_detail: {
-            content: ['이 필드는 필수 항목입니다.'],
-          },
-        },
-        { status: 400 }
-      )
+      errors.content = ['이 필드는 필수 항목입니다.']
     }
 
     if (!body.category_id) {
+      errors.category_id = ['이 필드는 필수 항목입니다.']
+    }
+
+    if (Object.keys(errors).length > 0) {
       return HttpResponse.json(
         {
-          error_detail: {
-            category_id: ['이 필드는 필수 항목입니다.'],
-          },
+          error_detail: errors,
         },
         { status: 400 }
       )
