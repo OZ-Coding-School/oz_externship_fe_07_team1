@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 @theme {
+  /* Font */
+  --font-pretendard: 'Pretendard Variable', sans-serif;
+
   /* ---------- Primitive ---------- */
   --color-primary-default: #6201e0;
   --color-primary-hover: #4e01b3;
@@ -393,4 +396,7 @@
 .custom-editor * {
   scrollbar-width: thin !important;
   scrollbar-color: #cecece transparent !important;
+}
+body {
+  font-family: var(--font-pretendard);
 }
