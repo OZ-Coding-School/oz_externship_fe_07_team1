@@ -40,7 +40,9 @@ function PostCreate() {
         <MarkdownEditor value={content} setValue={setContent} />
 
         <div className="flex w-full justify-end">
-          <Button onClick={handleSubmit}>등록하기</Button>
+          <Button type="submit" onClick={handleSubmit}>
+            등록하기
+          </Button>
         </div>
       </div>
     </div>
