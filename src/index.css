@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-
 @theme {
   /* ---------- Primitive ---------- */
   --color-primary-default: #6201e0;
