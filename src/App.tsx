@@ -18,7 +18,7 @@ function App() {
         {/* 상세 페이지 */}
         <Route path="/posts/:id" element={<PostDetail />} />
 
-        {/* 게시글 추가 페이지 */}
+        {/* 게시글 작성 페이지 */}
         <Route path="/posts/create" element={<PostCreate />} />
 
         {/* 게시글 수정 페이지 */}

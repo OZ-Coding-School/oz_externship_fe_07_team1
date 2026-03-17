@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ChangeEvent } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import EditorToolbar from './EditorToolbar'
 import previewImage from '../../../assets/images/markdownimage1.png'
@@ -6,6 +6,7 @@ import previewImage from '../../../assets/images/markdownimage1.png'
 export default function MarkdownEditor() {
   // 에디터
   const editorWrapperRef = useRef<HTMLDivElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   // 마크다운
   const [value, setValue] = useState<string | undefined>(`# h1 title
@@ -196,26 +197,43 @@ std::cout << "Hello World!" << std::endl;
     updateSelection(nextValue, start + 1, start + 1 + selectedText.length)
   }
 
-  // 이미지 삽입
-  const insertImage = () => {
+  // 이미지 선택창 열기
+  const openImageUpload = () => {
+    fileInputRef.current?.click()
+  }
+
+  // 이미지 업로드
+  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
     const textarea = getTextarea()
     const currentValue = value ?? ''
 
-    if (!textarea) return
+    if (!file || !textarea) return
 
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
-    const markdown = `![Image name](${previewImage})`
+    const imageUrl = URL.createObjectURL(file)
+    const markdown = `![Image name](${imageUrl})`
 
     const nextValue =
       currentValue.slice(0, start) + markdown + currentValue.slice(end)
 
     updateSelection(nextValue, start, start + markdown.length)
+
+    event.target.value = ''
   }
 
   return (
     // 전체 박스
     <div className="bg-surface-default border-gray-250 rounded-5 flex w-236 flex-col overflow-hidden border">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageUpload}
+      />
+
       {/* 툴바 */}
       <div className="bg-surface-default border-gray-250 rounded-t-5 flex h-25 w-full items-center gap-5 overflow-hidden border-b p-8">
         <EditorToolbar
@@ -224,7 +242,7 @@ std::cout << "Hello World!" << std::endl;
           onUnderline={() => applyInlineFormat('<u>', '</u>')}
           onStrike={() => applyInlineFormat('~~')}
           onLink={insertLink}
-          onImage={insertImage}
+          onImage={openImageUpload}
           onUnorderedList={() => applyLinePrefix('ul')}
           onOrderedList={() => applyLinePrefix('ol')}
         />
