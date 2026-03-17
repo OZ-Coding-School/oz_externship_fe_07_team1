@@ -1,0 +1,38 @@
+name: Sync Fork with Public Upstream
+
+on:
+  schedule:
+    # 매일 한국시간 오전 9시 (UTC 00:00)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Personal Repo
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'Sync Bot'
+          git config --global user.email 'bot@noreply.github.com'
+
+      - name: Add Upstream Remote
+        run: |
+          git remote add upstream https://github.com/OZ-Coding-School/oz_externship_fe_07_team1.git
+          git fetch upstream
+
+      - name: Sync Upstream to Local
+        run: |
+          git merge upstream/dev --allow-unrelated-histories -m "chore: sync with upstream"
+
+      - name: Push to Personal Repo
+        run: |
+          git push origin dev
