@@ -6,8 +6,12 @@ export const useToast = () => {
   const hideToast = useToastStore((state) => state.hideToast)
 
   // 호출할 토스트 함수
-  const showToast = (type: 'default' | 'complete') => {
-    showToastStore(type)
+  const showToast = (
+    type: 'default' | 'complete' | 'success',
+    title?: string,
+    content?: string
+  ) => {
+    showToastStore(type, title, content)
   }
 
   return { showToast, hideToast }
