@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Check, X } from 'lucide-react'
+import { AlertCircle, Check, X } from 'lucide-react'
 import { useToastStore } from '../../../store/useToastStore'
 
 export default function ToastItem({
@@ -27,14 +27,31 @@ export default function ToastItem({
     <div className="animate-toast-in">
       {/* 전송 완료 안내 */}
       {(type === 'default' || type === 'success') && (
-        <div className="shadow-toast bg-surface-sub flex h-fit w-62 items-center gap-3 rounded border border-gray-200 px-4 py-3">
-          <div className="bg-answer-active flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-            <Check className="text-surface-sub h-3.5 w-3.5" strokeWidth={3} />
+        <div className="shadow-toast bg-surface-default flex min-h-16 w-96 items-start gap-4 rounded border border-gray-200 px-5 py-4">
+          <div
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+              type === 'success' ? 'bg-answer-active' : 'bg-red-500'
+            }`}
+          >
+            {type === 'success' ? (
+              <Check className="text-surface-default h-4 w-4" strokeWidth={3} />
+            ) : (
+              <AlertCircle
+                className="text-surface-default h-4 w-4"
+                strokeWidth={2.5}
+              />
+            )}
           </div>
 
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col gap-1">
+            <span className="text-text-main text-sm font-semibold tracking-tight">
+              {title || (type === 'success' ? '완료' : '오류')}
+            </span>
             <span className="text-text-sub text-sm font-normal tracking-tight">
-              {title || '전송 완료! 이메일을 확인해주세요.'}
+              {content ||
+                (type === 'success'
+                  ? '요청이 정상적으로 처리되었습니다.'
+                  : '요청 처리 중 문제가 발생했습니다.')}
             </span>
           </div>
 

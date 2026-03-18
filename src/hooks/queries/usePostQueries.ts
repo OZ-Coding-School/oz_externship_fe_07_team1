@@ -21,11 +21,15 @@ function useCreatePost() {
     mutationFn: createPostAPI,
 
     onSuccess: () => {
-      showToast('complete')
+      showToast('success', '게시글 등록 완료', '게시글이 등록되었습니다!')
     },
 
     onError: () => {
-      showToast('default')
+      showToast(
+        'default',
+        '입력 오류',
+        '카테고리, 제목, 내용은 필수 입력 사항입니다.'
+      )
     },
   })
 }
