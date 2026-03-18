@@ -18,16 +18,16 @@ export default function EditorHeader({
 }: EditorHeaderProps) {
   return (
     // 헤더
-    <div className="flex w-236 flex-col gap-10">
+    <div className="flex w-236 flex-col">
       {/* 제목 */}
-      <div className="flex h-11 items-center">
-        <h1 className="text-gray-primary text-8 leading-14 font-bold tracking-tighter">
+      <div className="mb-4 flex items-center">
+        <h1 className="text-gray-primary text-8 leading-11 font-bold tracking-tighter">
           커뮤니티 게시글 작성
         </h1>
       </div>
 
       {/* 구분선 */}
-      <div className="bg-gray-250 h-px w-full" />
+      <div className="bg-gray-250 mb-10 h-px w-full" />
 
       {/* 입력 박스 */}
       <div className="border-gray-250 bg-surface-default rounded-5 flex h-50 w-full flex-col justify-center gap-5 border px-10">
