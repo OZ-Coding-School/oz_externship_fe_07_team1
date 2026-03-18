@@ -19,12 +19,10 @@ function PostCreate() {
   const { mutate: createPost } = useCreatePost()
 
   const handleSubmit = () => {
-    if (!categoryId) return
-
     const requestBody: CreatePostRequest = {
       title,
       content,
-      category_id: categoryId,
+      category_id: categoryId as number,
     }
 
     createPost(requestBody, {
