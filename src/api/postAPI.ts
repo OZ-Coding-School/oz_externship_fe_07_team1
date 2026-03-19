@@ -3,6 +3,7 @@ import type {
   CreatePostRequest,
   CreatePostResponse,
   GetPostCategoriesResponse,
+  UpdatePostRequest,
 } from '../types'
 
 // 카테고리 목록 조회
@@ -25,14 +26,7 @@ async function getPostDetailAPI(postId: string) {
 }
 
 // 게시글 수정
-async function updatePostAPI(
-  postId: string,
-  params: {
-    title: string
-    content: string
-    category_id: number
-  }
-) {
+async function updatePostAPI(postId: string, params: UpdatePostRequest) {
   const response = await instance.put(`/posts/${postId}`, params)
   return response.data
 }

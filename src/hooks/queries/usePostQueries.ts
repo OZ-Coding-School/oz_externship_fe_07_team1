@@ -10,6 +10,7 @@ import type {
   CreatePostRequest,
   CreatePostResponse,
   GetPostCategoriesResponse,
+  UpdatePostRequest,
 } from '../../types'
 
 // 카테고리 목록 조회
@@ -60,11 +61,7 @@ function useUpdatePost() {
       params,
     }: {
       postId: string
-      params: {
-        title: string
-        content: string
-        category_id: number
-      }
+      params: UpdatePostRequest
     }) => updatePostAPI(postId, params),
 
     onSuccess: () => {
