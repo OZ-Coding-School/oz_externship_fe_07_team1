@@ -47,7 +47,7 @@ function PostCreate() {
 
   return (
     <div className="bg-surface-default flex w-full justify-center pt-27 pb-38">
-      <div className="flex w-236 flex-col gap-13">
+      <div className="flex w-59 flex-col gap-4">
         <EditorHeader
           headerTitle="커뮤니티 게시글 작성"
           title={title}

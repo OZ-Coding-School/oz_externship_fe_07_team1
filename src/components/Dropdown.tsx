@@ -43,7 +43,7 @@ export default function Dropdown({
 
       {isOpen && (
         <div className="shadow-box bg-surface-default absolute top-11 z-50 flex w-full flex-col rounded border border-gray-500 py-1">
-          <ul className="scrollbar scrollbar-w-2 scrollbar-thumb-gray-disabled scrollbar-track-transparent scrollbar-thumb-rounded-sm flex max-h-60 flex-col gap-2.5 overflow-y-auto p-1">
+          <ul className="scrollbar scrollbar-w-2 scrollbar-thumb-gray-disabled scrollbar-track-transparent scrollbar-thumb-rounded-sm flex max-h-60 flex-col gap-2 overflow-y-auto p-1">
             {options.map((option) => (
               <li
                 key={option}
@@ -53,7 +53,7 @@ export default function Dropdown({
                   setIsOpen(false)
                 }}
                 className={cn(
-                  'hover:bg-primary-100 flex h-12 w-full shrink-0 cursor-pointer items-center justify-between rounded-sm px-4 py-2.5 text-sm transition-colors',
+                  'hover:bg-primary-100 flex h-12 w-full shrink-0 cursor-pointer items-center justify-between rounded-sm px-4 py-2 text-sm transition-colors',
                   selected === option
                     ? 'text-primary-default font-semibold'
                     : 'text-text-main'

@@ -27,7 +27,7 @@ function PostEdit() {
 
   useEffect(() => {
     if (!postDetail) return
-
+    // 기존 게시글 데이터 불러오기
     setTitle(postDetail.title)
     setContent(postDetail.content)
     setCategoryId(postDetail.category?.id ?? postDetail.category_id)
@@ -47,6 +47,7 @@ function PostEdit() {
       },
       {
         onSuccess: () => {
+          // 수정 완료 후 상세 페이지로 이동 (임시)
           navigate(`/posts/${id}`)
         },
       }
@@ -55,7 +56,7 @@ function PostEdit() {
 
   return (
     <div className="bg-surface-default flex w-full justify-center pt-27 pb-38">
-      <div className="flex w-236 flex-col gap-13">
+      <div className="flex w-59 flex-col gap-4">
         <EditorHeader
           headerTitle="커뮤니티 게시글 수정"
           title={title}
