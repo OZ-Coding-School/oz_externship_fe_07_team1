@@ -5,26 +5,21 @@ import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
 import { Button } from '../components/Button'
 import { useCreatePost, usePostCategories } from '../hooks'
 import type { CreatePostRequest } from '../types'
+import { categoryData } from '../mocks/data/categoryData'
 
 const initialContent = ''
-
-const fallbackCategories = [
-  { id: 1, name: '공지사항' },
-  { id: 2, name: '자유게시판' },
-  { id: 3, name: '질의응답' },
-]
 
 function PostCreate() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState(initialContent)
   const [categoryId, setCategoryId] = useState<number | null>(
-    fallbackCategories[0].id // 기본 카테고리 선택
+    categoryData[0].id
   )
 
   const navigate = useNavigate()
 
   const { data } = usePostCategories()
-  const categories = data?.length ? data : fallbackCategories
+  const categories = data?.length ? data : categoryData
 
   const { mutate: createPost } = useCreatePost()
 

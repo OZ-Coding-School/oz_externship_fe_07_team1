@@ -4,12 +4,7 @@ import EditorHeader from '../components/editor/EditorHeader'
 import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
 import { Button } from '../components/Button'
 import { usePostCategories, usePostDetail, useUpdatePost } from '../hooks'
-
-const fallbackCategories = [
-  { id: 1, name: '공지사항' },
-  { id: 2, name: '자유게시판' },
-  { id: 3, name: '질의응답' },
-]
+import { categoryData } from '../mocks/data/categoryData'
 
 function PostEdit() {
   const { id } = useParams()
@@ -20,7 +15,7 @@ function PostEdit() {
   const [categoryId, setCategoryId] = useState<number | null>(null)
 
   const { data } = usePostCategories()
-  const categories = data?.length ? data : fallbackCategories
+  const categories = data?.length ? data : categoryData
 
   const { data: postDetail } = usePostDetail(id as string)
   const { mutate: updatePost } = useUpdatePost()
