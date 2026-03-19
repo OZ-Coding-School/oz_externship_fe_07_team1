@@ -6,8 +6,8 @@ import {
   getPostDetailMOCK,
   updatePostMOCK,
 } from './handlers/post-handlers'
-
 import { commentHandlers } from './handlers/comment-handlers'
+import { getRefreshTokenMOCK } from './handlers/auth-handlers'
 
 export const handlers = [
   http.get('/api/hello', () => {
@@ -18,5 +18,6 @@ export const handlers = [
   createPostMOCK,
   getPostDetailMOCK,
   updatePostMOCK,
+  getRefreshTokenMOCK,
   ...commentHandlers,
 ]
