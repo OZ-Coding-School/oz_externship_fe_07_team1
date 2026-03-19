@@ -2,9 +2,9 @@ import { Routes, Route, Navigate } from 'react-router'
 import Test from './pages/Test'
 import RootLayout from './components/layout/RootLayout'
 import PostList from './pages/PostList'
-import PostDetail from './pages/PostDetail'
 import PostCreate from './pages/PostCreate'
 import PostEdit from './pages/PostEdit'
+import CommunityDetailPage from './pages/CommunityDetailPage'
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/posts" element={<PostList />} />
 
         {/* 상세 페이지 */}
-        <Route path="/posts/:id" element={<PostDetail />} />
+        <Route path="/posts/:id" element={<CommunityDetailPage />} />
 
         {/* 게시글 작성 페이지 */}
         <Route path="/posts/create" element={<PostCreate />} />
