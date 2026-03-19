@@ -3,12 +3,18 @@ import { useEffect, useState } from 'react'
 import EditorHeader from '../components/editor/EditorHeader'
 import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
 import { Button } from '../components/Button'
-import { usePostCategories, usePostDetail, useUpdatePost } from '../hooks'
+import {
+  usePostCategories,
+  usePostDetail,
+  useUpdatePost,
+  useToast,
+} from '../hooks'
 import { categoryData } from '../mocks/data/categoryData'
 
 function PostEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -25,11 +31,14 @@ function PostEdit() {
     // 기존 게시글 데이터 불러오기
     setTitle(postDetail.title)
     setContent(postDetail.content)
-    setCategoryId(postDetail.category?.id ?? postDetail.category_id)
+    setCategoryId(postDetail.category?.id ?? null)
   }, [postDetail])
 
   const handleSubmit = () => {
-    if (!categoryId) return
+    if (!categoryId) {
+      showToast('default', '입력 오류', '카테고리를 선택해주세요.')
+      return
+    }
 
     updatePost(
       {
