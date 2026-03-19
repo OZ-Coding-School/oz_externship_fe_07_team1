@@ -1,6 +1,10 @@
 import { http, HttpResponse } from 'msw'
 import { categoryData } from '../data/categoryData'
-import type { CreatePostRequest, CreatePostResponse } from '../../types'
+import type {
+  CreatePostRequest,
+  CreatePostResponse,
+  UpdatePostRequest,
+} from '../../types'
 
 let postPk = 1
 
@@ -80,11 +84,16 @@ export const postHandlers = [
       {
         id: post.pk,
         title: post.title,
+        author: { id: 1, nickname: '관리자', profile_img_url: '' },
         content: post.content,
         category: {
           id: category?.id ?? post.category_id,
           name: category?.name ?? '',
         },
+        view_count: 0,
+        like_count: 0,
+        created_at: '2026-03-19T00:00:00',
+        updated_at: '2026-03-19T00:00:00',
       },
       { status: 200 }
     )
@@ -92,7 +101,7 @@ export const postHandlers = [
 
   http.put(`${BASE_URL}/posts/:postId`, async ({ params, request }) => {
     const postId = Number(params.postId)
-    const body = (await request.json()) as CreatePostRequest
+    const body = (await request.json()) as UpdatePostRequest
 
     const postIndex = mockPosts.findIndex((item) => item.pk === postId)
 
