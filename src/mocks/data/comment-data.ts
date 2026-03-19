@@ -1,0 +1,25 @@
+import type { GetCommentsResponse } from '../../types'
+
+export const mockCommentsData: GetCommentsResponse = {
+  count: 2,
+  next: null,
+  previous: null,
+  results: [
+    {
+      id: 1,
+      author: { id: 1, nickname: 'jnubugo', profile_img_url: '' },
+      tagged_users: [],
+      content: '좋아요',
+      created_at: '2025-06-13T10:00:00+09:00',
+      updated_at: '2025-06-13T10:00:00+09:00',
+    },
+    {
+      id: 2,
+      author: { id: 2, nickname: 'name2', profile_img_url: '' },
+      tagged_users: [],
+      content: '굿굿',
+      created_at: '2025-06-13T11:00:00+09:00',
+      updated_at: '2025-06-13T11:00:00+09:00',
+    },
+  ],
+}

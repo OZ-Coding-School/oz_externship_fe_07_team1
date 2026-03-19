@@ -1,4 +1,4 @@
-import upDownIcon from '../assets/images/up-down-icon.svg'
+import { ArrowUpDown } from 'lucide-react'
 
 interface CommentSortProps {
   sortOrder: 'latest' | 'oldest'
@@ -14,7 +14,7 @@ export const CommentSort = ({ sortOrder, onChange }: CommentSortProps) => {
       <span className="text-base font-normal text-gray-600">
         {sortOrder === 'latest' ? '최신순' : '오래된 순'}
       </span>
-      <img src={upDownIcon} alt="정렬 아이콘" className="h-4 w-4" />
+      <ArrowUpDown className="h-4 w-4 text-gray-600" />
     </button>
   )
 }

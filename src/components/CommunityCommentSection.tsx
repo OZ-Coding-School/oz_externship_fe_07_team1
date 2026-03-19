@@ -2,42 +2,49 @@ import { useState } from 'react'
 import { CommentSort } from '../components/CommunityCommentSort'
 import { CommentInput } from '../components/CommentInput'
 import { CommentItem } from '../components/CommunityCommentItem'
-import MessageCircle from '../assets/images/message-circle.svg'
+import { MessageCircle } from 'lucide-react'
+import {
+  useComments,
+  useCreateComment,
+} from '../hooks/queries/useCommentQueries'
 
-// 테스트용 더미 데이터
-const DUMMY_COMMENTS = [
-  {
-    id: 1,
-    authorName: 'jnubugo',
-    date: '2025년 6월 13일',
-    content: '좋아요',
-    isMyComment: false,
-  },
-  {
-    id: 2,
-    authorName: 'name2',
-    date: '2025년 6월 13일',
-    content: '굿굿',
-    isMyComment: false,
-  },
-]
+// 임시로 postId 1번 게시글이라고 가정하고 렌더링
+const TEMP_POST_ID = 1
 
 export const CommentSection = () => {
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest')
 
+  // MSW 서버에서 진짜 데이터 땡겨오기
+  const { data, isLoading } = useComments(TEMP_POST_ID)
+  const { mutate: createComment } = useCreateComment(TEMP_POST_ID)
+
+  // 데이터가 아직 안 왔으면 로딩 표시
+  if (isLoading) {
+    return (
+      <div className="py-10 text-center text-gray-500">
+        댓글을 불러오는 중...
+      </div>
+    )
+  }
+
+  // 서버에서 받은 댓글 목록과 개수
+  const comments = data?.results || []
+  const commentCount = data?.count || 0
+
   return (
     <section>
-      {/* 1. 댓글 입력창 */}
+      {/*  댓글 입력창 */}
       <div className="mb-6">
-        <CommentInput onSubmit={(content) => console.log('등록:', content)} />
+        {/* 등록 버튼 누르면 서버로 보냄 */}
+        <CommentInput onSubmit={(content) => createComment({ content })} />
       </div>
 
-      {/* 2. 댓글 헤더 및 정렬 */}
-      <div className="flex items-center justify-between">
+      {/* 댓글 헤더 및 정렬 */}
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src={MessageCircle} alt="댓글 아이콘" className="h-6 w-6" />
-          <h3 className="font-['Roboto'] text-xl leading-[110%] font-bold text-gray-900">
-            댓글 {DUMMY_COMMENTS.length}개
+          <MessageCircle className="h-5 w-5 text-gray-600" />
+          <h3 className="text-xl leading-[110%] font-bold text-gray-900">
+            댓글 {commentCount}개
           </h3>
         </div>
         <CommentSort sortOrder={sortOrder} onChange={setSortOrder} />
@@ -45,13 +52,14 @@ export const CommentSection = () => {
 
       {/* 3. 댓글 리스트 */}
       <div className="flex flex-col">
-        {DUMMY_COMMENTS.map((comment) => (
+        {comments.map((comment) => (
           <CommentItem
             key={comment.id}
-            authorName={comment.authorName}
-            date={comment.date}
+            authorName={comment.author.nickname}
+            // 서버에서 온 날짜를 예쁘게 포맷팅
+            date={new Date(comment.created_at).toLocaleDateString()}
             content={comment.content}
-            isMyComment={comment.isMyComment}
+            isMyComment={false}
             onDelete={() => console.log(comment.id, '번 댓글 삭제')}
           />
         ))}
