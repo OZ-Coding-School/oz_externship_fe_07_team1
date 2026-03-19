@@ -59,8 +59,8 @@ function PostEdit() {
   }
 
   return (
-    <div className="bg-surface-default flex w-full justify-center pt-27 pb-38">
-      <div className="flex w-59 flex-col gap-4">
+    <div className="bg-surface-default flex w-full justify-center py-20">
+      <div className="flex w-236 flex-col gap-12">
         <EditorHeader
           headerTitle="커뮤니티 게시글 수정"
           title={title}

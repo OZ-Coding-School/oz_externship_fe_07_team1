@@ -15,57 +15,61 @@ const mockPosts: {
   category_id: number
 }[] = []
 
-const BASE_URL = 'https://api.ozcodingschool.site/api/v1'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-export const postHandlers = [
-  http.get(`${BASE_URL}/posts/categories`, () => {
-    return HttpResponse.json(categoryData, { status: 200 })
-  }),
+// 카테고리 목록
+const getPostCategoriesMOCK = http.get(`${BASE_URL}/posts/categories`, () => {
+  return HttpResponse.json(categoryData, { status: 200 })
+})
 
-  http.post(`${BASE_URL}/posts`, async ({ request }) => {
-    const body = (await request.json()) as CreatePostRequest
+// 게시글 생성
+const createPostMOCK = http.post(`${BASE_URL}/posts`, async ({ request }) => {
+  const body = (await request.json()) as CreatePostRequest
 
-    const errors: Record<string, string[]> = {}
+  const errors: Record<string, string[]> = {}
 
-    if (!body.title) {
-      errors.title = ['이 필드는 필수 항목입니다.']
-    }
+  if (!body.title) {
+    errors.title = ['이 필드는 필수 항목입니다.']
+  }
 
-    if (!body.content) {
-      errors.content = ['이 필드는 필수 항목입니다.']
-    }
+  if (!body.content) {
+    errors.content = ['이 필드는 필수 항목입니다.']
+  }
 
-    if (!body.category_id) {
-      errors.category_id = ['이 필드는 필수 항목입니다.']
-    }
+  if (!body.category_id) {
+    errors.category_id = ['이 필드는 필수 항목입니다.']
+  }
 
-    if (Object.keys(errors).length > 0) {
-      return HttpResponse.json(
-        {
-          error_detail: errors,
-        },
-        { status: 400 }
-      )
-    }
+  if (Object.keys(errors).length > 0) {
+    return HttpResponse.json(
+      {
+        error_detail: errors,
+      },
+      { status: 400 }
+    )
+  }
 
-    const newPost = {
-      pk: postPk,
-      title: body.title,
-      content: body.content,
-      category_id: body.category_id,
-    }
+  const newPost = {
+    pk: postPk,
+    title: body.title,
+    content: body.content,
+    category_id: body.category_id,
+  }
 
-    mockPosts.push(newPost)
+  mockPosts.push(newPost)
 
-    const response: CreatePostResponse = {
-      detail: '게시글이 성공적으로 등록되었습니다.',
-      pk: postPk++,
-    }
+  const response: CreatePostResponse = {
+    detail: '게시글이 성공적으로 등록되었습니다.',
+    pk: postPk++,
+  }
 
-    return HttpResponse.json(response, { status: 201 })
-  }),
+  return HttpResponse.json(response, { status: 201 })
+})
 
-  http.get(`${BASE_URL}/posts/:postId`, ({ params }) => {
+// 게시글 상세 조회
+const getPostDetailMOCK = http.get(
+  `${BASE_URL}/posts/:postId`,
+  ({ params }) => {
     const postId = Number(params.postId)
     const post = mockPosts.find((item) => item.pk === postId)
 
@@ -84,7 +88,11 @@ export const postHandlers = [
       {
         id: post.pk,
         title: post.title,
-        author: { id: 1, nickname: '관리자', profile_img_url: '' },
+        author: {
+          id: 1,
+          nickname: '관리자',
+          profile_img_url: '',
+        },
         content: post.content,
         category: {
           id: category?.id ?? post.category_id,
@@ -97,9 +105,12 @@ export const postHandlers = [
       },
       { status: 200 }
     )
-  }),
-
-  http.put(`${BASE_URL}/posts/:postId`, async ({ params, request }) => {
+  }
+)
+// 게시글 수정
+const updatePostMOCK = http.put(
+  `${BASE_URL}/posts/:postId`,
+  async ({ params, request }) => {
     const postId = Number(params.postId)
     const body = (await request.json()) as UpdatePostRequest
 
@@ -153,5 +164,12 @@ export const postHandlers = [
       },
       { status: 200 }
     )
-  }),
-]
+  }
+)
+
+export {
+  getPostCategoriesMOCK,
+  createPostMOCK,
+  getPostDetailMOCK,
+  updatePostMOCK,
+}
