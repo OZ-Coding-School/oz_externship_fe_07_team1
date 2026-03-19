@@ -12,9 +12,7 @@ const initialContent = ''
 function PostCreate() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState(initialContent)
-  const [categoryId, setCategoryId] = useState<number | null>(
-    categoryData[0].id
-  )
+  const [categoryId, setCategoryId] = useState<number | null>(null)
 
   const navigate = useNavigate()
 
