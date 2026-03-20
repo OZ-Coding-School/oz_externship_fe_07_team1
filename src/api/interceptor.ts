@@ -32,9 +32,10 @@ instance.interceptors.response.use(
     }
     originalRequest._retry = true
 
-    // 토큰 재발급 요청에서 401 에러(리프레시 토큰 만료) 발생하면 리다이렉트
+    // 토큰 재발급 요청에서 에러(리프레시 토큰 만료) 발생하면 리다이렉트
     if (originalRequest.url?.includes('accounts/me/refresh')) {
       clearAccessToken()
+      window.location.href = 'https://my.ozcodingschool.site/login'
       return Promise.reject(error)
     }
 
