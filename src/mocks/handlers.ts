@@ -7,6 +7,8 @@ import {
   updatePostMOCK,
 } from './handlers/post-handlers'
 
+import { commentHandlers } from './handlers/comment-handlers'
+
 export const handlers = [
   http.get('/api/hello', () => {
     return HttpResponse.json({ message: 'Hello, world!', code: 200 })
@@ -16,4 +18,5 @@ export const handlers = [
   createPostMOCK,
   getPostDetailMOCK,
   updatePostMOCK,
+  ...commentHandlers,
 ]

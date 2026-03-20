@@ -46,7 +46,7 @@ function useCreatePost() {
 function usePostDetail(postId: string) {
   return useQuery({
     queryKey: ['postDetail', postId],
-    queryFn: () => getPostDetailAPI(postId),
+    queryFn: () => getPostDetailAPI(Number(postId)),
     enabled: !!postId,
   })
 }

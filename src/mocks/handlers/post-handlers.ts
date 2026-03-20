@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { categoryData } from '../data/categoryData'
 import { postCardData } from '../data/postCardData'
+import { mockPostDetailData } from '../data/post-detail-data'
 import type {
   CreatePostRequest,
   CreatePostResponse,
@@ -78,6 +79,7 @@ const createPostMOCK = http.post(`${BASE_URL}/posts`, async ({ request }) => {
 })
 
 // 게시글 상세 조회
+/*
 const getPostDetailMOCK = http.get(
   `${BASE_URL}/posts/:postId`,
   ({ params }) => {
@@ -118,7 +120,13 @@ const getPostDetailMOCK = http.get(
     )
   }
 )
+*/
 // 게시글 수정
+
+const getPostDetailMOCK = http.get(`${BASE_URL}/posts/:postId`, () => {
+  return HttpResponse.json(mockPostDetailData, { status: 200 })
+})
+
 const updatePostMOCK = http.put(
   `${BASE_URL}/posts/:postId`,
   async ({ params, request }) => {
