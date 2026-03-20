@@ -1,9 +1,11 @@
 import Dropdown from '../Dropdown'
 
 interface EditorHeaderProps {
+  headerTitle?: string
   title: string
   onChangeTitle: (value: string) => void
   onChangeCategoryId: (value: number) => void
+  selectedCategoryId?: number | null
   categories: {
     id: number
     name: string
@@ -11,9 +13,11 @@ interface EditorHeaderProps {
 }
 
 export default function EditorHeader({
+  headerTitle = '커뮤니티 게시글 작성',
   title,
   onChangeTitle,
   onChangeCategoryId,
+  selectedCategoryId,
   categories,
 }: EditorHeaderProps) {
   return (
@@ -22,7 +26,7 @@ export default function EditorHeader({
       {/* 제목 */}
       <div className="mb-4 flex items-center">
         <h1 className="text-gray-primary text-8 leading-11 font-bold tracking-tighter">
-          커뮤니티 게시글 작성
+          {headerTitle}
         </h1>
       </div>
 
@@ -37,6 +41,9 @@ export default function EditorHeader({
             <Dropdown
               placeholder="카테고리 선택"
               options={categories.map((c) => c.name)}
+              selected={
+                categories.find((c) => c.id === selectedCategoryId)?.name
+              }
               onSelect={(value) => {
                 const selected = categories.find((c) => c.name === value)
                 if (selected) {

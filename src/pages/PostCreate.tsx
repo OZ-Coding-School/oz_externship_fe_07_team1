@@ -5,6 +5,7 @@ import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
 import { Button } from '../components/Button'
 import { useCreatePost, usePostCategories } from '../hooks'
 import type { CreatePostRequest } from '../types'
+import { categoryData } from '../mocks/data/categoryData'
 
 const initialContent = ''
 
@@ -15,31 +16,38 @@ function PostCreate() {
 
   const navigate = useNavigate()
 
-  const { data: categories = [] } = usePostCategories()
+  const { data } = usePostCategories()
+  const categories = data?.length ? data : categoryData
+
   const { mutate: createPost } = useCreatePost()
 
   const handleSubmit = () => {
+    if (!categoryId) return
+
     const requestBody: CreatePostRequest = {
       title,
       content,
-      category_id: categoryId as number,
+      category_id: categoryId,
     }
 
     createPost(requestBody, {
-      onSuccess: () => {
-        navigate('/posts')
+      onSuccess: (res) => {
+        // 작성 완료 후 수정 페이지로 이동 (임시)
+        navigate(`/posts/edit/${res.pk}`)
       },
     })
   }
 
   return (
-    <div className="bg-surface-default flex w-full justify-center pt-27 pb-38">
-      <div className="flex w-236 flex-col gap-13">
+    <div className="bg-surface-default flex w-full justify-center py-20">
+      <div className="flex w-236 flex-col gap-12">
         <EditorHeader
+          headerTitle="커뮤니티 게시글 작성"
           title={title}
           onChangeTitle={setTitle}
           onChangeCategoryId={setCategoryId}
           categories={categories}
+          selectedCategoryId={categoryId}
         />
 
         <MarkdownEditor value={content} setValue={setContent} />

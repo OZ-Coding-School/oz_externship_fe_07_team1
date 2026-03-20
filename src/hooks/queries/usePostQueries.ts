@@ -1,12 +1,19 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { createPostAPI, getPostCategoriesAPI } from '../../api/postAPI'
+import {
+  createPostAPI,
+  getPostCategoriesAPI,
+  getPostDetailAPI,
+  updatePostAPI,
+} from '../../api/postAPI'
 import { useToast } from '../useToast'
 import type {
   CreatePostRequest,
   CreatePostResponse,
   GetPostCategoriesResponse,
+  UpdatePostRequest,
 } from '../../types'
 
+// 카테고리 목록 조회
 function usePostCategories() {
   return useQuery<GetPostCategoriesResponse>({
     queryKey: ['postCategories'],
@@ -14,6 +21,7 @@ function usePostCategories() {
   })
 }
 
+// 게시글 생성
 function useCreatePost() {
   const { showToast } = useToast()
 
@@ -34,4 +42,40 @@ function useCreatePost() {
   })
 }
 
-export { usePostCategories, useCreatePost }
+// 게시글 상세 조회
+function usePostDetail(postId: string) {
+  return useQuery({
+    queryKey: ['postDetail', postId],
+    queryFn: () => getPostDetailAPI(postId),
+    enabled: !!postId,
+  })
+}
+
+// 게시글 수정
+function useUpdatePost() {
+  const { showToast } = useToast()
+
+  return useMutation({
+    mutationFn: ({
+      postId,
+      params,
+    }: {
+      postId: string
+      params: UpdatePostRequest
+    }) => updatePostAPI(postId, params),
+
+    onSuccess: () => {
+      showToast('success', '게시글 수정 완료', '게시글이 수정되었습니다!')
+    },
+
+    onError: () => {
+      showToast(
+        'default',
+        '게시글 수정 실패',
+        '게시글 수정 중 오류가 발생했습니다.'
+      )
+    },
+  })
+}
+
+export { usePostCategories, useCreatePost, usePostDetail, useUpdatePost }
