@@ -40,6 +40,16 @@ function PostEdit() {
       return
     }
 
+    if (!title.trim()) {
+      showToast('default', '입력 오류', '제목을 입력해주세요.')
+      return
+    }
+
+    if (!content.trim()) {
+      showToast('default', '입력 오류', '내용을 입력해주세요.')
+      return
+    }
+
     updatePost(
       {
         postId: id as string,
