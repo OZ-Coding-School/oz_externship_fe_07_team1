@@ -1,19 +1,30 @@
 import { http, HttpResponse } from 'msw'
 import { categoryData } from '../data/categoryData'
+import { postCardData } from '../data/postCardData'
 import type {
   CreatePostRequest,
   CreatePostResponse,
   UpdatePostRequest,
 } from '../../types'
 
-let postPk = 1
+let postPk = 2
+
+const initialCategory =
+  categoryData.find((item) => item.name === '프로젝트 구인') ?? categoryData[0]
 
 const mockPosts: {
   pk: number
   title: string
   content: string
   category_id: number
-}[] = []
+}[] = [
+  {
+    pk: postCardData.id,
+    title: postCardData.title,
+    content: postCardData.contentPreview,
+    category_id: initialCategory.id,
+  },
+]
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -89,19 +100,19 @@ const getPostDetailMOCK = http.get(
         id: post.pk,
         title: post.title,
         author: {
-          id: 1,
-          nickname: '관리자',
-          profile_img_url: '',
+          id: postCardData.author.id,
+          nickname: postCardData.author.nickname,
+          profile_img_url: postCardData.author.profileImgUrl,
         },
         content: post.content,
         category: {
           id: category?.id ?? post.category_id,
           name: category?.name ?? '',
         },
-        view_count: 0,
-        like_count: 0,
-        created_at: '2026-03-19T00:00:00',
-        updated_at: '2026-03-19T00:00:00',
+        view_count: postCardData.viewCount,
+        like_count: postCardData.likeCount,
+        created_at: postCardData.createdAt,
+        updated_at: postCardData.updatedAt,
       },
       { status: 200 }
     )
