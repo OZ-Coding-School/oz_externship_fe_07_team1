@@ -13,7 +13,7 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
-      const nextHeight = Math.max(120, textareaRef.current.scrollHeight)
+      const nextHeight = Math.max(80, textareaRef.current.scrollHeight)
       textareaRef.current.style.height = `${nextHeight}px`
     }
   }, [content])
@@ -27,13 +27,13 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   return (
     <div
       className={cn(
-        'flex w-full gap-10 rounded-xl p-5',
-        'border-gray-250 bg-surface-default focus-within:border-primary-default border transition-all'
+        'flex w-full gap-4 rounded-xl p-4',
+        'bg-surface-default focus-within:border-primary-default border-gray-250 border transition-all'
       )}
     >
       <textarea
         ref={textareaRef} // 높이 자동조절
-        className="text-text-main placeholder:text-gray-250 min-h-30 w-full resize-none bg-transparent text-sm leading-[1.5] outline-none"
+        className="text-text-main min-h-20 w-full resize-none bg-transparent text-sm leading-[1.5] outline-none placeholder:text-gray-400"
         placeholder="개인정보를 공유 및 요청하거나, 명예 훼손, 무단 광고, 불법 정보 유포시 모니터링 후 삭제될 수 있습니다."
         value={content}
         onChange={(e) => setContent(e.target.value)}
