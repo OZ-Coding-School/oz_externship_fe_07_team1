@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams, useLocation } from 'react-router'
 import { useEffect, useState } from 'react'
 import EditorHeader from '../components/editor/EditorHeader'
 import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
@@ -14,7 +14,10 @@ import { categoryData } from '../mocks/data/categoryData'
 function PostEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { showToast } = useToast()
+
+  const postId = Number(id)
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -23,18 +26,35 @@ function PostEdit() {
   const { data } = usePostCategories()
   const categories = data?.length ? data : categoryData
 
-  const { data: postDetail } = usePostDetail(id as string)
+  const { data: postDetail } = usePostDetail(postId)
   const { mutate: updatePost } = useUpdatePost()
 
+  const state = location.state as
+    | {
+        title?: string
+        content?: string
+        category_id?: number
+      }
+    | undefined
+
   useEffect(() => {
+    if (state) {
+      setTitle(state.title ?? '')
+      setContent(state.content ?? '')
+      setCategoryId(state.category_id ?? null)
+      return
+    }
+
     if (!postDetail) return
-    // 기존 게시글 데이터 불러오기
+
     setTitle(postDetail.title)
     setContent(postDetail.content)
-    setCategoryId(postDetail.category?.id ?? null)
-  }, [postDetail])
+    setCategoryId(postDetail.category_id ?? null)
+  }, [postDetail, state])
 
   const handleSubmit = () => {
+    if (!postId || Number.isNaN(postId)) return
+
     if (!categoryId) {
       showToast('default', '입력 오류', '카테고리를 선택해주세요.')
       return
@@ -52,7 +72,7 @@ function PostEdit() {
 
     updatePost(
       {
-        postId: id as string,
+        postId: String(postId),
         params: {
           title,
           content,
@@ -61,12 +81,13 @@ function PostEdit() {
       },
       {
         onSuccess: () => {
-          // 수정 완료 후 상세 페이지로 이동 (임시)
-          navigate(`/posts/${id}`)
+          navigate(`/posts/${postId}`)
         },
       }
     )
   }
+
+  if (!postId || Number.isNaN(postId)) return null
 
   return (
     <div className="bg-surface-default flex w-full justify-center py-20">
@@ -83,7 +104,11 @@ function PostEdit() {
         <MarkdownEditor value={content} setValue={setContent} />
 
         <div className="flex w-full justify-end">
-          <Button type="submit" onClick={handleSubmit}>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className="bg-primary-default hover:bg-primary-hover active:bg-primary-active rounded-4 h-12 w-32 text-white"
+          >
             완료
           </Button>
         </div>

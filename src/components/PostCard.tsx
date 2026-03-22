@@ -1,72 +1,109 @@
-import { ThumbsUp } from 'lucide-react'
-import { postCardData } from '../mocks/data/postCardData'
-import { formatCreatedTime } from '../utils/time'
+import { ThumbsUp, MessageCircle, Eye } from 'lucide-react'
 
-function PostCard({
-  category = postCardData.categoryName,
-  title = postCardData.title,
-  contentPreview = postCardData.contentPreview,
-  likeCount = postCardData.likeCount,
-  viewCount = postCardData.viewCount,
-  commentCount = postCardData.commentCount,
-  authorName = postCardData.author.nickname,
-  authorProfileImg = postCardData.author.profileImgUrl,
-  createdAt = postCardData.createdAt,
-}) {
-  const dateString = formatCreatedTime(createdAt)
+export interface PostCardProps {
+  id: string
+  author: {
+    id: string
+    nickname: string
+    profile_img_url: string
+  }
+  title: string
+  thumbnail_img_url: string | null
+  content_preview: string
+  comment_count: number
+  view_count: number
+  like_count: number
+  created_at: string
+  category_id: number
+}
+
+interface Props {
+  post: PostCardProps
+  onClick: () => void
+}
+
+function PostCard({ post, onClick }: Props) {
+  const getTimeAgo = (createdAt: string) => {
+    const now = new Date()
+    const postTime = new Date(createdAt)
+    const diffMs = now.getTime() - postTime.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffMins < 1) return '방금 전'
+    if (diffMins < 60) return `${diffMins}분 전`
+    if (diffHours < 24) return `${diffHours}시간 전`
+    if (diffDays < 7) return `${diffDays}일 전`
+    return postTime.toLocaleDateString('ko-KR')
+  }
 
   return (
-    <div className="hover:bg-primary-50 flex h-56 w-full cursor-pointer gap-10 rounded-xl p-6 transition-all duration-200">
+    <div
+      onClick={onClick}
+      className="border-gray-250 flex h-52 w-full cursor-pointer gap-6 border-b py-8 transition hover:bg-gray-100"
+    >
       <div className="flex w-full flex-col justify-between">
         <div className="flex flex-col gap-3">
-          {/* 카테고리 */}
-          <span className="text-xs text-gray-600">{category}</span>
+          <span className="text-12 text-text-sub">카테고리</span>
 
-          {/* 제목 */}
-          <h3 className="truncate text-lg font-semibold text-black">{title}</h3>
+          <h3 className="text-16 text-text-main line-clamp-1 font-semibold">
+            {post.title}
+          </h3>
 
-          {/* 내용 (한 줄) */}
-          <p className="truncate text-sm text-gray-400">{contentPreview}</p>
+          <p className="text-14 text-text-light line-clamp-1">
+            {post.content_preview}
+          </p>
         </div>
 
         <div className="flex w-full justify-between">
-          {/* 좋아요 / 댓글 / 조회 수 */}
-          <div className="flex gap-3">
-            <div className="flex items-center gap-1 text-gray-500">
-              <ThumbsUp className="size-5" />
-              <span className="text-xs">좋아요 {likeCount}</span>
+          <div className="flex gap-4">
+            <div className="text-text-light flex items-center gap-1">
+              <ThumbsUp className="size-4" />
+              <span className="text-12">{post.like_count}</span>
             </div>
-            <div className="flex items-center gap-1 text-gray-500">
-              <span className="text-xs">댓글 {commentCount}</span>
+            <div className="text-text-light flex items-center gap-1">
+              <MessageCircle className="size-4" />
+              <span className="text-12">{post.comment_count}</span>
             </div>
-            <div className="flex items-center gap-1 text-gray-500">
-              <span className="text-xs">조회수 {viewCount}</span>
+            <div className="text-text-light flex items-center gap-1">
+              <Eye className="size-4" />
+              <span className="text-12">{post.view_count}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* 프로필 사진 / 이름 */}
-            <div className="flex items-center gap-1">
-              <img
-                src={authorProfileImg}
-                alt="author-profile-image"
-                className="size-6 rounded-full object-cover"
-              />
-              <span className="text-xs text-gray-600">{authorName}</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {post.author.profile_img_url ? (
+                <img
+                  src={post.author.profile_img_url}
+                  alt="author-profile-image"
+                  className="size-6 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-6 items-center justify-center rounded-full bg-gray-200">
+                  👤
+                </div>
+              )}
+              <span className="text-12 text-text-sub">
+                {post.author.nickname}
+              </span>
             </div>
 
-            {/* 작성 시기 */}
-            <span className="text-xs text-gray-400">{dateString}</span>
+            <span className="text-12 text-text-light">
+              {getTimeAgo(post.created_at)}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 게시글 이미지 */}
-      <img
-        src="https://picsum.photos/600/400"
-        alt="post-image"
-        className="rounded-lg object-cover"
-      />
+      {post.thumbnail_img_url && (
+        <img
+          src={post.thumbnail_img_url}
+          alt="post-image"
+          className="rounded-4 h-40 w-40 object-cover"
+        />
+      )}
     </div>
   )
 }
