@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { ChevronDown, Pencil } from 'lucide-react'
 import PostCard from '../components/PostCard'
@@ -11,7 +11,6 @@ import SortButton from '../components/community/SortButton'
 
 function PostList() {
   const navigate = useNavigate()
-  const scrollRef = useRef<HTMLDivElement>(null)
 
   const [page, setPage] = useState(1)
   const [categoryId, setCategoryId] = useState(0)
@@ -39,13 +38,6 @@ function PostList() {
     { label: '좋아요 순', value: 'most_likes' },
     { label: '댓글 순', value: 'most_comments' },
   ]
-
-  const handleScroll = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return
-    scrollRef.current.scrollBy({
-      left: dir === 'left' ? -200 : 200,
-    })
-  }
 
   // 게시글 목록 조회
   const { data, isLoading } = usePostList({
