@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { getPostsAPI, getPostCategoriesAPI } from '../api/postAPI'
 
 export interface PostListParams {
   categoryId?: number
@@ -41,47 +42,20 @@ export interface Category {
 export function useCategoryList() {
   return useQuery({
     queryKey: ['categories'],
-    queryFn: async () => {
-      const response = await fetch('/api/v1/posts/categories')
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch categories')
-      }
-
-      return response.json() as Promise<Category[]>
-    },
+    queryFn: () => getPostCategoriesAPI(),
   })
 }
 
 export function usePostList(params: PostListParams) {
   return useQuery({
     queryKey: ['posts', params],
-    queryFn: async () => {
-      const searchParams = new URLSearchParams()
-
-      if (params.categoryId) {
-        searchParams.append('category_id', params.categoryId.toString())
-      }
-      if (params.sort) {
-        searchParams.append('sort', params.sort)
-      }
-      if (params.search) {
-        searchParams.append('search', params.search)
-      }
-      if (params.page) {
-        searchParams.append('page', params.page.toString())
-      }
-      if (params.pageSize) {
-        searchParams.append('page_size', params.pageSize.toString())
-      }
-
-      const response = await fetch(`/api/v1/posts?${searchParams.toString()}`)
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts')
-      }
-
-      return response.json() as Promise<PostListResponse>
-    },
+    queryFn: () =>
+      getPostsAPI({
+        page: params.page,
+        page_size: params.pageSize,
+        search: params.search,
+        category_id: params.categoryId,
+        sort: params.sort,
+      }),
   })
 }
