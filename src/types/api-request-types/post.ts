@@ -18,9 +18,18 @@ export interface UpdatePostRequest {
 export interface PostDetailResponse {
   id: number
   title: string
+  author: {
+    id: number
+    nickname: string
+    profile_img_url: string
+  }
+  category: {
+    id: number
+    name: string
+  }
   content: string
-  name: string
-  category_id: number
+  view_count: number
+  like_count: number
   created_at: string
   updated_at: string
 }

@@ -9,6 +9,42 @@ import { usePostList, useCategoryList } from '../hooks/usePostList'
 import CategoryFilterBar from '../components/CategoryFilterBar'
 import SortButton from '../components/community/SortButton'
 
+export interface PostListParams {
+  categoryId?: number
+  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
+  search?: string
+  page?: number
+  pageSize?: number
+}
+
+export interface Post {
+  id: any
+  author: {
+    id: any
+    nickname: string
+    profile_img_url: string
+  }
+  category: {
+    id: number
+    name: string
+  }
+  title: string
+  thumbnail_img_url: string | null
+  content_preview: string
+  comment_count: number
+  view_count: number
+  like_count: number
+  created_at: string
+  updated_at: string
+}
+
+export interface PostListResponse {
+  count: number
+  next: string | null
+  previous: string | null
+  results: Post[]
+}
+
 function PostList() {
   const navigate = useNavigate()
 
@@ -48,10 +84,11 @@ function PostList() {
     sort,
   })
 
-  const posts = data?.results ?? []
+  // data의 타입을 any로 처리하여 results 맵핑 시 에러 방지
+  const posts = (data as any)?.results ?? []
 
   // 전체 게시글 수 기반 페이지
-  const totalPages = Math.ceil((data?.count ?? 0) / 10)
+  const totalPages = Math.ceil(((data as any)?.count ?? 0) / 10)
 
   return (
     <div className="flex w-full justify-center pt-56">
@@ -117,7 +154,7 @@ function PostList() {
                 로딩 중...
               </div>
             ) : posts.length > 0 ? (
-              posts.map((post) => (
+              posts.map((post: any) => (
                 <PostCard
                   key={post.id}
                   post={post}
