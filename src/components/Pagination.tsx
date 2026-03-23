@@ -4,6 +4,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react'
+import { usePagination } from '../hooks/usePagination'
 
 interface PaginationProps {
   currentPage: number
@@ -16,10 +17,13 @@ function Pagination({
   totalPages,
   onPageChange,
 }: PaginationProps) {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+  const { containerRef, pages } = usePagination(currentPage, totalPages)
 
   return (
-    <div className="mt-12 flex items-center justify-center gap-2">
+    <div
+      ref={containerRef as React.RefObject<HTMLDivElement>}
+      className="mt-12 flex items-center justify-center gap-2"
+    >
       {/* << */}
       <button
         onClick={() => onPageChange(1)}
