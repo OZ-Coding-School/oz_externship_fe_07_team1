@@ -1,11 +1,13 @@
 import {
   useRef,
+  useState,
   type ChangeEvent,
   type Dispatch,
   type SetStateAction,
 } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import EditorToolbar from './EditorToolbar'
+import { useImageUpload } from '../../../hooks/useImageUpload'
 
 interface MarkdownEditorProps {
   value: string
@@ -19,6 +21,8 @@ export default function MarkdownEditor({
   // 에디터
   const editorWrapperRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const { isUploading, imgUrl } = useImageUpload(selectedFile)
 
   // textarea 찾기
   const getTextarea = () => {
@@ -184,6 +188,7 @@ export default function MarkdownEditor({
   // 이미지 업로드
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
+    if (file) setSelectedFile(file)
     const textarea = getTextarea()
     const currentValue = value ?? ''
 
@@ -191,8 +196,10 @@ export default function MarkdownEditor({
 
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
-    const imageUrl = URL.createObjectURL(file)
-    const markdown = `![Image name](${imageUrl})`
+    // const imageUrl = URL.createObjectURL(file)
+    const markdown = isUploading
+      ? 'image uploading...'
+      : `![Image name](${imgUrl})`
 
     const nextValue =
       currentValue.slice(0, start) + markdown + currentValue.slice(end)
