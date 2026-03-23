@@ -33,6 +33,26 @@ export interface PostListResponse {
   results: Post[]
 }
 
+export interface Category {
+  id: number
+  name: string
+}
+
+export function useCategoryList() {
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const response = await fetch('/api/v1/posts/categories')
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories')
+      }
+
+      return response.json() as Promise<Category[]>
+    },
+  })
+}
+
 export function usePostList(params: PostListParams) {
   return useQuery({
     queryKey: ['posts', params],
