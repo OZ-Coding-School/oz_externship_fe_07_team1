@@ -6,6 +6,7 @@ import Pagination from '../components/Pagination'
 import { SearchBar } from '../components/SearchBar'
 import { Button } from '../components/Button'
 import { usePostList } from '../hooks/usePostList'
+import CategoryFilterBar from '../components/CategoryFilterBar'
 
 function PostList() {
   const navigate = useNavigate()
@@ -28,6 +29,8 @@ function PostList() {
     { id: 5, name: '구인/협업' },
     { id: 6, name: '자료 공유' },
   ]
+
+  const [currentCategory, setCurrentCategory] = useState(categories[0])
 
   const sortList = [
     { label: '최신순', value: 'latest' },
@@ -90,31 +93,14 @@ function PostList() {
 
         {/* 카테고리 + 정렬 */}
         <div className="border-gray-250 flex items-center justify-between border-b pb-3">
-          <div className="flex w-166 items-center gap-2">
-            <button onClick={() => handleScroll('left')}>
-              <ChevronLeft className="size-5 text-gray-800" />
-            </button>
-
-            <div ref={scrollRef} className="flex gap-1 overflow-hidden">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setCategoryId(cat.id)}
-                  className={`text-16 flex h-11 items-center px-5 font-semibold whitespace-nowrap ${
-                    categoryId === cat.id
-                      ? 'border-primary-default text-primary-default border-b-2'
-                      : 'text-text-sub'
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-
-            <button onClick={() => handleScroll('right')}>
-              <ChevronRight className="size-5 text-gray-800" />
-            </button>
-          </div>
+          <CategoryFilterBar
+            currentCategory={currentCategory}
+            onCategoryClick={(cat) => {
+              setCurrentCategory(cat)
+              setCategoryId(cat.id)
+            }}
+            categoryList={categories}
+          />
 
           {/* 정렬 */}
           <div className="relative">
