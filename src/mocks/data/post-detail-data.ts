@@ -1,6 +1,6 @@
-import type { GetPostDetailResponse } from '../../types'
+import type { PostDetailResponse } from '../../types'
 
-export const mockPostDetailData: GetPostDetailResponse = {
+export const mockPostDetailData: PostDetailResponse = {
   id: 1,
   title: '러닝 메이트 함께해요.',
   author: {

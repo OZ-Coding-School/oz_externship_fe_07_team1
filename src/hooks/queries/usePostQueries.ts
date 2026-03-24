@@ -9,13 +9,13 @@ import { useToast } from '../useToast'
 import type {
   CreatePostRequest,
   CreatePostResponse,
-  GetPostCategoriesResponse,
+  PostCategory,
   UpdatePostRequest,
 } from '../../types'
 
 // 카테고리 목록 조회
 function usePostCategories() {
-  return useQuery<GetPostCategoriesResponse>({
+  return useQuery<PostCategory[]>({
     queryKey: ['postCategories'],
     queryFn: getPostCategoriesAPI,
   })
