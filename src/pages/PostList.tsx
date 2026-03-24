@@ -18,9 +18,9 @@ export interface PostListParams {
 }
 
 export interface Post {
-  id: any
+  id: number
   author: {
-    id: any
+    id: number
     nickname: string
     profile_img_url: string
   }
