@@ -32,8 +32,9 @@ function PostCreate() {
 
     createPost(requestBody, {
       onSuccess: (res) => {
-        // 작성 완료 후 수정 페이지로 이동 (임시)
-        navigate(`/posts/edit/${res.pk}`)
+        navigate(`/posts/edit/${res.pk}`, {
+          state: requestBody,
+        })
       },
     })
   }

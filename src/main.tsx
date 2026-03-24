@@ -13,6 +13,7 @@ async function enableMocking() {
   if (!import.meta.env.DEV) {
     return
   }
+
   const { worker } = await import('./mocks/browser.ts')
 
   return worker.start({
@@ -28,7 +29,6 @@ enableMocking().then(() => {
         <ToastContainer />
 
         <BrowserRouter>
-          {/* 라우팅 로직 */}
           <App />
         </BrowserRouter>
       </QueryClientProvider>

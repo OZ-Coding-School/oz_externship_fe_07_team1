@@ -21,19 +21,15 @@ export default function EditorHeader({
   categories,
 }: EditorHeaderProps) {
   return (
-    // 헤더
     <div className="flex w-236 flex-col">
-      {/* 제목 */}
       <div className="mb-4 flex items-center">
         <h1 className="text-gray-primary text-8 leading-11 font-bold tracking-tighter">
           {headerTitle}
         </h1>
       </div>
 
-      {/* 구분선 */}
       <div className="bg-gray-250 mb-10 h-px w-full" />
 
-      {/* 입력 박스 */}
       <div className="border-gray-250 bg-surface-default rounded-5 flex h-50 w-full flex-col justify-center gap-5 border px-10">
         <div className="flex w-full flex-col gap-5">
           {/* 카테고리 */}
@@ -45,10 +41,9 @@ export default function EditorHeader({
                 categories.find((c) => c.id === selectedCategoryId)?.name
               }
               onSelect={(value) => {
-                const selected = categories.find((c) => c.name === value)
-                if (selected) {
-                  onChangeCategoryId(selected.id)
-                }
+                const index = categories.findIndex((c) => c.name === value)
+                if (index === -1) return
+                onChangeCategoryId(categories[index].id)
               }}
             />
           </div>

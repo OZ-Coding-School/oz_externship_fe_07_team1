@@ -6,13 +6,12 @@ import { CommentSection } from '../components/CommunityCommentSection'
 import { Modal } from '../components/Modal'
 import { MiniPostActionButton } from '../components/MiniPostActionButton'
 import { usePostDetail } from '../hooks/queries/usePostDetailQueries'
+import { categoryData } from '../mocks/data/categoryData'
 
-// URL만 골라내서 <a> 태그로 바꿔주는 함수 추가
 const renderContentWithLinks = (text: string) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g // 인터넷 주소 찾는 공식
+  const urlRegex = /(https?:\/\/[^\s]+)/g
 
   return text.split(urlRegex).map((part, index) => {
-    // 만약 잘라낸 조각이 인터넷 주소라면 링크로 만들기
     if (part.match(urlRegex)) {
       return (
         <a
@@ -26,7 +25,6 @@ const renderContentWithLinks = (text: string) => {
         </a>
       )
     }
-    // 주소가 아니면 그냥 일반 글씨로 냅두기
     return part
   })
 }
@@ -41,10 +39,12 @@ export default function CommunityDetailPage() {
   // msw 요청
   const { data: post, isLoading } = usePostDetail(Number(id))
 
-  // 로딩 중이거나 데이터 없을 때 화면
   if (isLoading) return <div className="py-20 text-center">불러오는 중...</div>
   if (!post)
     return <div className="py-20 text-center">게시글을 찾을 수 없습니다.</div>
+
+  const categoryName =
+    categoryData.find((c) => c.id === post.category.id)?.name ?? '기타'
 
   return (
     <div className="mx-auto w-full max-w-[800px] px-4 py-10">
@@ -52,7 +52,7 @@ export default function CommunityDetailPage() {
       <header className="mb-6 border-b border-gray-200">
         {/* 카테고리 연동 */}
         <div className="text-primary-default mb-2 text-sm font-semibold">
-          {post.category.name}
+          {categoryName}
         </div>
         {/* 제목 & 프로필 연동 (오른쪽 정렬) */}
         <div className="mb-6 flex items-center justify-between">
@@ -100,22 +100,19 @@ export default function CommunityDetailPage() {
         </div>
       </header>
 
-      {/* 본문 연동 */}
       <main className="min-h-[200px] pb-10 text-base leading-[140%] tracking-[-3%] whitespace-pre-wrap text-gray-900">
         {renderContentWithLinks(post.content)}
       </main>
 
-      {/* 좋아요 / 공유 버튼 */}
       <div className="mb-8 flex justify-end gap-2 border-b border-gray-200 pb-8">
         <LikeButton
           status={isLiked ? 'enabled' : 'disabled'}
-          likeCount={post.like_count} // 좋아요 수 데이터에서 가져오기
+          likeCount={post.like_count}
           onClick={() => setIsLiked(!isLiked)}
         />
         <ShareButton />
       </div>
 
-      {/* 댓글 영역 */}
       <CommentSection />
 
       <Modal

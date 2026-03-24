@@ -1,8 +1,10 @@
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-react'
 import { usePagination } from '../hooks/usePagination'
-import DoubleLeftIcon from '../assets/images/double-left.svg?react'
-import LeftIcon from '../assets/images/left.svg?react'
-import RightIcon from '../assets/images/right.svg?react'
-import DoubleRightIcon from '../assets/images/double-right.svg?react'
 
 interface PaginationProps {
   currentPage: number
@@ -10,71 +12,68 @@ interface PaginationProps {
   onPageChange: (page: number) => void
 }
 
-export const Pagination = ({
+function Pagination({
   currentPage,
   totalPages,
   onPageChange,
-}: PaginationProps) => {
-  const { containerRef, pages, isFirstPage, isLastPage } = usePagination(
-    currentPage,
-    totalPages
-  )
+}: PaginationProps) {
+  const { containerRef, pages } = usePagination(currentPage, totalPages)
+
   return (
-    <nav
-      ref={containerRef}
-      className="mx-auto flex h-8 w-full max-w-150 items-center justify-center gap-2 overflow-hidden"
+    <div
+      ref={containerRef as React.RefObject<HTMLDivElement>}
+      className="mt-12 flex items-center justify-center gap-2"
     >
+      {/* << */}
       <button
         onClick={() => onPageChange(1)}
-        disabled={isFirstPage}
-        className="text-text-light hover:text-text-sub flex h-8 w-8 shrink-0 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-10 w-10 items-center justify-center"
       >
-        <DoubleLeftIcon />
+        <ChevronsLeft className="size-5" />
       </button>
 
+      {/* < */}
       <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={isFirstPage}
-        className="text-text-light hover:text-text-sub flex h-8 w-8 shrink-0 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+        className="flex h-10 w-10 items-center justify-center"
       >
-        <LeftIcon />
+        <ChevronLeft className="size-5" />
       </button>
 
+      {/* 페이지 */}
       <div className="flex gap-2">
-        {pages.map((page) => {
-          const isSelected = currentPage === page
-
-          return (
-            <button
-              key={page}
-              onClick={() => onPageChange(page)}
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg p-2.5 text-sm font-medium transition-colors ${
-                isSelected
-                  ? 'bg-primary-default text-surface-default'
-                  : 'bg-surface-default text-text-sub hover:bg-primary-100 hover:text-primary-default active:bg-primary-200 active:text-primary-default'
-              } `}
-            >
-              {page}
-            </button>
-          )
-        })}
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`text-14 flex h-10 w-10 items-center justify-center rounded-md ${
+              page === currentPage
+                ? 'bg-primary-default text-white'
+                : 'text-text-sub'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
       </div>
 
+      {/* > */}
       <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={isLastPage}
-        className="text-text-light hover:text-text-sub flex h-8 w-8 shrink-0 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+        className="flex h-10 w-10 items-center justify-center"
       >
-        <RightIcon />
+        <ChevronRight className="size-5" />
       </button>
 
+      {/* >> */}
       <button
         onClick={() => onPageChange(totalPages)}
-        disabled={isLastPage}
-        className="text-text-light hover:text-text-sub flex h-8 w-8 shrink-0 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-10 w-10 items-center justify-center"
       >
-        <DoubleRightIcon />
+        <ChevronsRight className="size-5" />
       </button>
-    </nav>
+    </div>
   )
 }
+
+export default Pagination

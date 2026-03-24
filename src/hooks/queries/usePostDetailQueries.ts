@@ -5,6 +5,7 @@ export function usePostDetail(postId: number) {
   return useQuery({
     queryKey: ['postDetail', postId],
     queryFn: () => getPostDetailAPI(postId),
+    enabled: !!postId,
   })
 }
 
