@@ -44,7 +44,7 @@ export default function CommunityDetailPage() {
     return <div className="py-20 text-center">게시글을 찾을 수 없습니다.</div>
 
   const categoryName =
-    categoryData.find((c) => c.id === post.category_id)?.name ?? '기타'
+    categoryData.find((c) => c.id === post.category.id)?.name ?? '기타'
 
   return (
     <div className="mx-auto w-full max-w-[800px] px-4 py-10">
