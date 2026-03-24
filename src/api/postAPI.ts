@@ -1,10 +1,11 @@
 import { instance } from './instance'
+import { apiInstance } from './apiInstance'
 import type {
   CreatePostRequest,
   CreatePostResponse,
-  GetPostCategoriesResponse,
+  PostCategory,
   UpdatePostRequest,
-  GetPostDetailResponse,
+  PostDetailResponse,
 } from '../types'
 
 // 게시글 목록 조회
@@ -24,9 +25,10 @@ async function getPostsAPI(params: {
 
 // 카테고리 목록 조회
 async function getPostCategoriesAPI() {
-  const response =
-    await instance.get<GetPostCategoriesResponse>('/posts/categories')
-  return response.data
+  const response = await apiInstance.get<{ categories: PostCategory[] }>(
+    '/posts/categories'
+  )
+  return response.data.categories
 }
 
 // 게시글 생성
@@ -43,7 +45,7 @@ async function updatePostAPI(postId: string, params: UpdatePostRequest) {
 
 // 게시글 상세 조회
 async function getPostDetailAPI(postId: number) {
-  const response = await instance.get<GetPostDetailResponse>(`/posts/${postId}`)
+  const response = await instance.get<PostDetailResponse>(`/posts/${postId}`)
   return response.data
 }
 

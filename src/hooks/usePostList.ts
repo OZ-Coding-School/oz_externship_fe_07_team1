@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getPostsAPI, getPostCategoriesAPI } from '../api/postAPI'
+import type { PostCategory } from '../types'
 
 export interface PostListParams {
   categoryId?: number
@@ -34,20 +35,15 @@ export interface PostListResponse {
   results: Post[]
 }
 
-export interface Category {
-  id: number
-  name: string
-}
-
 export function useCategoryList() {
-  return useQuery({
+  return useQuery<PostCategory[]>({
     queryKey: ['categories'],
     queryFn: () => getPostCategoriesAPI(),
   })
 }
 
 export function usePostList(params: PostListParams) {
-  return useQuery({
+  return useQuery<PostListResponse>({
     queryKey: ['posts', params],
     queryFn: () =>
       getPostsAPI({

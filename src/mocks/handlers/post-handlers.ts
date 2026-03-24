@@ -1,32 +1,14 @@
 import { http, HttpResponse } from 'msw'
 import { postListData } from '../data/postListData'
 import { categoryData } from '../data/categoryData'
-import { postCardData } from '../data/postCardData'
 import type { CreatePostRequest, CreatePostResponse } from '../../types'
 import { MSW_BASE_URL } from '../../constants/baseUrl'
 
 let postPk = 2
 
-const initialCategory =
-  categoryData.find((item) => item.name === '프로젝트 구인') ?? categoryData[0]
-
-const mockPosts: {
-  pk: number
-  title: string
-  content: string
-  category_id: number
-}[] = [
-  {
-    pk: postCardData.id,
-    title: postCardData.title,
-    content: postCardData.contentPreview,
-    category_id: initialCategory.id,
-  },
-]
-
 // 카테고리 목록
 export const getPostCategoriesMOCK = http.get(
-  `${MSW_BASE_URL}/posts/categories`,
+  `${MSW_BASE_URL}/api/v1/posts/categories`,
   () => {
     return HttpResponse.json(categoryData, { status: 200 })
   }
@@ -68,41 +50,18 @@ export const getPostListMOCK = http.get('*/api/v1/posts', ({ request }) => {
 
 // 게시글 생성
 export const createPostMOCK = http.post(
-  `${MSW_BASE_URL}/posts`,
+  `${MSW_BASE_URL}/api/v1/posts`,
   async ({ request }) => {
     const body = (await request.json()) as CreatePostRequest
-
     const errors: Record<string, string[]> = {}
 
-    if (!body.title) {
-      errors.title = ['이 필드는 필수 항목입니다.']
-    }
-
-    if (!body.content) {
-      errors.content = ['이 필드는 필수 항목입니다.']
-    }
-
-    if (!body.category_id) {
-      errors.category_id = ['이 필드는 필수 항목입니다.']
-    }
+    if (!body.title) errors.title = ['이 필드는 필수 항목입니다.']
+    if (!body.content) errors.content = ['이 필드는 필수 항목입니다.']
+    if (!body.category_id) errors.category_id = ['이 필드는 필수 항목입니다.']
 
     if (Object.keys(errors).length > 0) {
-      return HttpResponse.json(
-        {
-          error_detail: errors,
-        },
-        { status: 400 }
-      )
+      return HttpResponse.json({ error_detail: errors }, { status: 400 })
     }
-
-    const newPost = {
-      pk: postPk,
-      title: body.title,
-      content: body.content,
-      category_id: body.category_id,
-    }
-
-    mockPosts.push(newPost)
 
     const response: CreatePostResponse = {
       detail: '게시글이 성공적으로 등록되었습니다.',
@@ -118,17 +77,12 @@ export const getPostDetailMOCK = http.get(
   '*/api/v1/posts/:id',
   ({ params }) => {
     const id = Number(params.id ?? 0)
-
     const post = postListData.find((p: any) => Number(p.id) === id)
 
     if (!post) {
       return HttpResponse.json({
         id,
-        author: {
-          id: 1,
-          nickname: '임시유저',
-          profile_img_url: '',
-        },
+        author: { id: 1, nickname: '임시유저', profile_img_url: '' },
         title: '작성된 게시글',
         content: '작성 직후 이동한 게시글입니다.',
         thumbnail_img_url: null,
@@ -163,14 +117,10 @@ export const getPostDetailMOCK = http.get(
 
 // 게시글 수정
 export const updatePostMOCK = http.put(
-  `${MSW_BASE_URL}/posts/:postId`,
+  `${MSW_BASE_URL}/api/v1/posts/:postId`,
   async ({ params, request }) => {
     const id = Number(params.id ?? 0)
     const body = (await request.json()) as any
-
-    return HttpResponse.json({
-      id,
-      ...body,
-    })
+    return HttpResponse.json({ id, ...body })
   }
 )
