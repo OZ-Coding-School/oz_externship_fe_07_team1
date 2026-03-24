@@ -8,16 +8,21 @@ export function useImageUpload(file: File | null) {
   const { showToast } = useToast()
 
   useEffect(() => {
-    if (isUploading || !file) return
+    if (!file) return
 
     const handleImageUpload = async () => {
       try {
         setIsUploading(true)
+        setImgUrl('')
+
         const { presigned_url: newPresignedUrl, img_url: newImgUrl } =
           await getPresignedUrlAPI(file.name)
+
         await uploadImageToS3(newPresignedUrl, file)
+
         setImgUrl(newImgUrl)
       } catch (err) {
+        setImgUrl('')
         showToast(
           'default',
           '이미지 업로드 실패',
