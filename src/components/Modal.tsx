@@ -9,7 +9,7 @@ const modalVariants = cva(
   {
     variants: {
       variant: {
-        delete: 'h-[195px] w-107 p-7 shadow-[var(--shadow-modal-delete)]',
+        delete: 'h-[165px] w-107 p-6 shadow-[var(--shadow-modal-delete)]',
         alert: 'h-[173px] w-107 p-7 shadow-[var(--shadow-modal)]',
       },
     },
@@ -50,7 +50,7 @@ export const Modal = ({
         onClick={(e) => e.stopPropagation()}
         className={cn(modalVariants({ variant }))}
       >
-        <div className="text-text-main text-base leading-[1.4] font-normal tracking-[-0.03em]">
+        <div className="text-base leading-[140%] font-normal tracking-[-3%] text-gray-700">
           {message}
         </div>
         {/* 하단 버튼 영역 */}

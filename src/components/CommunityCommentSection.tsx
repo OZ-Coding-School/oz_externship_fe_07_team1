@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { CommentSort } from '../components/CommunityCommentSort'
 import { CommentInput } from '../components/CommentInput'
 import { CommentItem } from '../components/CommunityCommentItem'
+import { Modal } from '../components/Modal'
 import { MessageCircle } from 'lucide-react'
 import {
   useComments,
   useCreateComment,
+  useDeleteComment,
 } from '../hooks/queries/useCommentQueries'
 
 // 임시로 postId 1번 게시글이라고 가정하고 렌더링
@@ -13,10 +15,13 @@ const TEMP_POST_ID = 1
 
 export const CommentSection = () => {
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
   // MSW 서버에서 진짜 데이터 땡겨오기
   const { data, isLoading } = useComments(TEMP_POST_ID)
   const { mutate: createComment } = useCreateComment(TEMP_POST_ID)
+  const { mutate: deleteComment } = useDeleteComment(TEMP_POST_ID)
 
   // 데이터가 아직 안 왔으면 로딩 표시
   if (isLoading) {
@@ -28,8 +33,23 @@ export const CommentSection = () => {
   }
 
   // 서버에서 받은 댓글 목록과 개수
-  const comments = data?.results || []
+  const rawComments = data?.results || []
   const commentCount = data?.count || 0
+
+  const sortedComments = [...rawComments].sort((a, b) => {
+    const timeA = new Date(a.created_at).getTime()
+    const timeB = new Date(b.created_at).getTime()
+
+    // 최신순 오래된순 구현
+    return sortOrder === 'latest' ? timeB - timeA : timeA - timeB
+  })
+  const handleDeleteConfirm = () => {
+    if (deleteTargetId !== null) {
+      deleteComment(deleteTargetId)
+      setIsModalOpen(false)
+      setDeleteTargetId(null)
+    }
+  }
 
   return (
     <section>
@@ -52,18 +72,27 @@ export const CommentSection = () => {
 
       {/* 3. 댓글 리스트 */}
       <div className="flex flex-col">
-        {comments.map((comment) => (
+        {sortedComments.map((comment) => (
           <CommentItem
             key={comment.id}
             authorName={comment.author.nickname}
             // 서버에서 온 날짜를 예쁘게 포맷팅
             date={new Date(comment.created_at).toLocaleDateString()}
             content={comment.content}
-            isMyComment={false}
-            onDelete={() => console.log(comment.id, '번 댓글 삭제')}
+            isMyComment
+            onDelete={() => {
+              setDeleteTargetId(comment.id)
+              setIsModalOpen(true)
+            }}
           />
         ))}
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        message="댓글을 삭제하시겠습니까?"
+      />
     </section>
   )
 }
