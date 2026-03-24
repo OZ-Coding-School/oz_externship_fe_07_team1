@@ -43,19 +43,20 @@ function CategoryFilterBar({
           className="flex gap-1 transition-transform duration-300"
           style={{ transform: `translateX(-${translateX}px)` }}
         >
-          {categoryList.map((el) => (
-            <button
-              key={el.id}
-              className={cn(
-                'hover:bg-primary-100 transition-color shrink-0 cursor-pointer rounded-sm px-5 py-3 text-base font-semibold text-gray-600 duration-200',
-                el.id === currentCategory.id &&
-                  'text-primary-default bg-primary-100'
-              )}
-              onClick={() => onCategoryClick(el)}
-            >
-              {el.name}
-            </button>
-          ))}
+          {Array.isArray(categoryList) &&
+            categoryList.map((el) => (
+              <button
+                key={el.id}
+                className={cn(
+                  'hover:bg-primary-100 transition-color shrink-0 cursor-pointer rounded-sm px-5 py-3 text-base font-semibold text-gray-600 duration-200',
+                  el.id === currentCategory.id &&
+                    'text-primary-default bg-primary-100'
+                )}
+                onClick={() => onCategoryClick(el)}
+              >
+                {el.name}
+              </button>
+            ))}
         </div>
       </div>
 

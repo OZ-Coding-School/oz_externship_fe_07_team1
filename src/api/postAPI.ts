@@ -1,4 +1,5 @@
 import { instance } from './instance'
+import { apiInstance } from './apiInstance'
 import type {
   CreatePostRequest,
   CreatePostResponse,
@@ -24,8 +25,10 @@ async function getPostsAPI(params: {
 
 // 카테고리 목록 조회
 async function getPostCategoriesAPI() {
-  const response = await instance.get<PostCategory[]>('/posts/categories')
-  return response.data
+  const response = await apiInstance.get<{ categories: PostCategory[] }>(
+    '/posts/categories'
+  )
+  return response.data.categories
 }
 
 // 게시글 생성
