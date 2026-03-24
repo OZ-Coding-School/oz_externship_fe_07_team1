@@ -1,10 +1,11 @@
 import { delay, http, HttpResponse } from 'msw'
 import type { PreSignedUrlResponse } from '../../types/api-response-types/image'
+import { MSW_BASE_URL } from '../../constants/baseUrl'
 
 const getPresignedUrlMOCK = http.put(
-  `/qna/questions/presigned-url`,
+  `${MSW_BASE_URL}/qna/questions/presigned-url`,
   async ({ request }) => {
-    await delay(500)
+    await delay(1000)
 
     const body = await request.json()
 
@@ -28,7 +29,7 @@ const getPresignedUrlMOCK = http.put(
 const uploadImageToS3MOCK = http.put(
   `https://fake/presigned_url/file_name`,
   async () => {
-    await delay(500)
+    await delay(1000)
 
     return HttpResponse.json({ status: 200 })
   }
