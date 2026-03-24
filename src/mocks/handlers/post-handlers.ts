@@ -74,7 +74,7 @@ export const createPostMOCK = http.post(
 
 // 게시글 상세 조회
 export const getPostDetailMOCK = http.get(
-  '*/api/v1/posts/:id',
+  `${MSW_BASE_URL}/posts/:id`,
   ({ params }) => {
     const id = Number(params.id ?? 0)
     const post = postListData.find((p: any) => Number(p.id) === id)
