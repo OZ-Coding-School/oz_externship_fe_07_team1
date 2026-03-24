@@ -1,11 +1,14 @@
 import {
+  useEffect,
   useRef,
+  useState,
   type ChangeEvent,
   type Dispatch,
   type SetStateAction,
 } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import EditorToolbar from './EditorToolbar'
+import { useImageUpload } from '../../../hooks/useImageUpload'
 
 interface MarkdownEditorProps {
   value: string
@@ -19,6 +22,20 @@ export default function MarkdownEditor({
   // 에디터
   const editorWrapperRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [pendingPlaceholder, setPendingPlaceholder] = useState<string>('')
+  const { imgUrl } = useImageUpload(selectedFile)
+
+  // presigned url 발급 + S3 이미지 업로드 로직 관리
+  useEffect(() => {
+    if (!selectedFile || !pendingPlaceholder || !imgUrl) return
+
+    const markdownImage = `![${selectedFile.name}](${imgUrl})`
+
+    setValue((prev) => prev.replace(pendingPlaceholder, markdownImage))
+    setPendingPlaceholder('')
+    setSelectedFile(null)
+  }, [selectedFile, pendingPlaceholder, imgUrl, value])
 
   // textarea 찾기
   const getTextarea = () => {
@@ -189,15 +206,16 @@ export default function MarkdownEditor({
 
     if (!file || !textarea) return
 
+    const newPlaceholder = `__image_uploading_${Date.now()}__`
+
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
-    const imageUrl = URL.createObjectURL(file)
-    const markdown = `![Image name](${imageUrl})`
-
     const nextValue =
-      currentValue.slice(0, start) + markdown + currentValue.slice(end)
+      currentValue.slice(0, start) + newPlaceholder + currentValue.slice(end)
 
-    updateSelection(nextValue, start, start + markdown.length)
+    updateSelection(nextValue, start, start + newPlaceholder.length)
+    setPendingPlaceholder(newPlaceholder)
+    setSelectedFile(file)
 
     event.target.value = ''
   }
