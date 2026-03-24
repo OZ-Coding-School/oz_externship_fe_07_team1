@@ -9,7 +9,10 @@ export const mockPostDetailData: GetPostDetailResponse = {
     profile_img_url: '',
   },
 
-  category_id: 3,
+  category: {
+    id: 3,
+    name: '운동/러닝',
+  },
 
   content:
     'https://www.codeit.kr/costudy/join/684e26b75155062e46211e77\n\n함께 열공해요',
