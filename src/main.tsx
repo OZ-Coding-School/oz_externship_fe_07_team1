@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 import App from './App.tsx'
 import { ToastContainer } from './components/common/Toast'
+import './api/interceptor'
 
 const queryClient = new QueryClient()
 

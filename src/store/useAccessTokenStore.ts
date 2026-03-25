@@ -11,7 +11,7 @@ export const useAccessTokenStore = create<AccessTokenState>()(
   persist(
     (set) => ({
       // 액세스 토큰 값
-      accessToken: '',
+      accessToken: import.meta.env.VITE_TEMPORARY_ACCESS_TOKEN || '',
 
       setAccessToken: (newToken) => set({ accessToken: newToken }),
 

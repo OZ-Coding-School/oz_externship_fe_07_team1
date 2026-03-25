@@ -22,7 +22,10 @@ function PostCreate() {
   const { mutate: createPost } = useCreatePost()
 
   const handleSubmit = () => {
-    if (!categoryId) return
+    if (!categoryId) {
+      alert('카테고리를 선택해주세요.')
+      return
+    }
 
     const requestBody: CreatePostRequest = {
       title,
@@ -32,9 +35,8 @@ function PostCreate() {
 
     createPost(requestBody, {
       onSuccess: (res) => {
-        navigate(`/posts/edit/${res.pk}`, {
-          state: requestBody,
-        })
+        // 수정: 등록 성공 후 상세 페이지(PostDetail)로 이동
+        navigate(`/posts/${res.pk}`)
       },
     })
   }
