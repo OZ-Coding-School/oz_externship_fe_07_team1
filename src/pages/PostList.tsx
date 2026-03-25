@@ -5,7 +5,7 @@ import PostCard from '../components/PostCard'
 import Pagination from '../components/Pagination'
 import { SearchBar } from '../components/SearchBar'
 import { Button } from '../components/Button'
-import { usePostList, useCategoryList } from '../hooks/usePostList'
+import { usePosts, usePostCategories } from '../hooks/queries/usePostQueries'
 import CategoryFilterBar from '../components/CategoryFilterBar'
 import SortButton from '../components/community/SortButton'
 
@@ -55,15 +55,17 @@ function PostList() {
     'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
   >('latest')
 
-  const { data: categoryData } = useCategoryList()
-  const categories = categoryData ?? [{ id: 0, name: '전체' }]
+  const { data: categoryData } = usePostCategories()
+  const categories = categoryData
+    ? [{ id: 0, name: '전체' }, ...categoryData]
+    : [{ id: 0, name: '전체' }]
 
   const [currentCategory, setCurrentCategory] = useState(categories[0])
 
   useEffect(() => {
     if (categoryData && categoryData.length > 0) {
       const selected =
-        categoryData.find((c) => c.id === categoryId) || categoryData[0]
+        categoryData.find((c) => c.id === categoryId) || categories[0]
       setCurrentCategory(selected)
     }
   }, [categoryData, categoryId])
@@ -76,18 +78,18 @@ function PostList() {
   ]
 
   // 게시글 목록 조회
-  const { data, isLoading } = usePostList({
+  const { data, isLoading } = usePosts({
     page,
-    pageSize: 10,
+    page_size: 10,
     search,
-    categoryId: categoryId === 0 ? undefined : categoryId,
+    category_id: categoryId === 0 ? undefined : categoryId,
     sort,
   })
 
-  // data의 타입을 any로 처리하여 results 맵핑 시 에러 방지
+  // 실서버 응답 구조(results)에 맞춰 데이터 추출
   const posts = (data as any)?.results ?? []
 
-  // 전체 게시글 수 기반 페이지
+  // 전체 게시글 수 기반 페이지 계산
   const totalPages = Math.ceil(((data as any)?.count ?? 0) / 10)
 
   return (

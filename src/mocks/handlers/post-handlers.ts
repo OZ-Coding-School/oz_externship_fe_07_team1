@@ -14,40 +14,6 @@ export const getPostCategoriesMOCK = http.get(
   }
 )
 
-// 게시글 목록 조회
-export const getPostListMOCK = http.get('*/api/v1/posts', ({ request }) => {
-  const url = new URL(request.url)
-  const page = Number(url.searchParams.get('page') || 1)
-  const pageSize = Number(url.searchParams.get('page_size') || 10)
-
-  const totalCount = postListData.length
-  const startIdx = (page - 1) * pageSize
-  const endIdx = startIdx + pageSize
-
-  return HttpResponse.json({
-    count: totalCount,
-    next: null,
-    previous: null,
-    results: postListData.slice(startIdx, endIdx).map((post: any) => ({
-      id: Number(post.id),
-      author: {
-        id: Number(post.author.id),
-        nickname: post.author.name,
-        profile_img_url: post.author.profileImage || '',
-      },
-      title: post.title,
-      thumbnail_img_url: post.imageUrl || null,
-      content_preview: post.content.substring(0, 50),
-      comment_count: Number(post.comments),
-      view_count: Number(post.views),
-      like_count: Number(post.likes),
-      created_at: post.createdAt,
-      updated_at: post.createdAt,
-      category_id: Number(post.category.id),
-    })),
-  })
-})
-
 // 게시글 생성
 export const createPostMOCK = http.post(
   `${MSW_BASE_URL}/api/v1/posts`,

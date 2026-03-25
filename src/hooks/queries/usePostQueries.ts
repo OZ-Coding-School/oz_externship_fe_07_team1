@@ -4,6 +4,7 @@ import {
   getPostCategoriesAPI,
   getPostDetailAPI,
   updatePostAPI,
+  getPostsAPI,
 } from '../../api/postAPI'
 import { useToast } from '../useToast'
 import type {
@@ -18,6 +19,20 @@ function usePostCategories() {
   return useQuery<PostCategory[]>({
     queryKey: ['postCategories'],
     queryFn: getPostCategoriesAPI,
+  })
+}
+
+// 게시글 목록 조회
+function usePosts(params: {
+  page?: number
+  page_size?: number
+  search?: string
+  category_id?: number
+  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
+}) {
+  return useQuery({
+    queryKey: ['posts', params],
+    queryFn: () => getPostsAPI(params),
   })
 }
 
@@ -78,4 +93,10 @@ function useUpdatePost() {
   })
 }
 
-export { usePostCategories, useCreatePost, usePostDetail, useUpdatePost }
+export {
+  usePostCategories,
+  usePosts,
+  useCreatePost,
+  usePostDetail,
+  useUpdatePost,
+}
