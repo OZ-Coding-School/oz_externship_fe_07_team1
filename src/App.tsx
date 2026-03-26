@@ -5,8 +5,24 @@ import PostList from './pages/PostList'
 import PostCreate from './pages/PostCreate'
 import PostEdit from './pages/PostEdit'
 import CommunityDetailPage from './pages/CommunityDetailPage'
+import { useEffect } from 'react'
+import { useAccessTokenStore } from './store/useAccessTokenStore'
+import { useUserInfo } from './hooks/queries/useUserQueries'
+import { useUserInfoStore } from './store/useUserInfoStore'
 
 function App() {
+  const { accessToken } = useAccessTokenStore()
+  const { setUserInfo } = useUserInfoStore()
+  const { data: newUserInfo, isSuccess } = useUserInfo({
+    enabled: !!accessToken,
+  })
+
+  useEffect(() => {
+    if (isSuccess) {
+      setUserInfo(newUserInfo)
+    }
+  }, [isSuccess])
+
   return (
     <Routes>
       <Route element={<RootLayout />}>
