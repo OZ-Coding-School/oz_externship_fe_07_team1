@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { instance } from './instance'
 import type { PreSignedUrlResponse } from '../types/api-response-types/image'
+import { apiInstance } from './apiInstance'
 
 // Presigned URL 발급 요청
 async function getPresignedUrlAPI(fileName: string) {
-  const response = await instance.put<PreSignedUrlResponse>(
+  const response = await apiInstance.put<PreSignedUrlResponse>(
     '/qna/questions/presigned-url',
     {
       file_name: fileName,
