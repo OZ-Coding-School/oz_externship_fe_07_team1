@@ -4,10 +4,12 @@ import { useAccessTokenStore } from '../../store/useAccessTokenStore'
 import { User } from 'lucide-react'
 import { useState } from 'react'
 import UserMenu from '../user/UserMenu'
+import { useUserInfoStore } from '../../store/useUserInfoStore'
 
 function Header() {
   const [isProfileImgToggled, setIsProfileImgToggled] = useState(false)
   const { accessToken } = useAccessTokenStore()
+  const { userInfo } = useUserInfoStore()
 
   return (
     <header className="border-b border-gray-200">
@@ -39,10 +41,21 @@ function Header() {
               className="bg-primary-100 relative size-full cursor-pointer rounded-full"
               onClick={() => setIsProfileImgToggled((prev) => !prev)}
             >
-              <User className="text-primary-400 b-0 absolute bottom-0 left-1/2 size-8 -translate-x-1/2" />
+              {userInfo?.profileImgUrl ? (
+                <img
+                  src={userInfo.profileImgUrl}
+                  alt={userInfo.name}
+                  className="size-full rounded-full object-cover"
+                />
+              ) : (
+                <User className="text-primary-400 b-0 absolute bottom-0 left-1/2 size-8 -translate-x-1/2" />
+              )}
             </button>
             {isProfileImgToggled && (
-              <UserMenu className="absolute top-16 left-0" />
+              <UserMenu
+                userInfo={userInfo}
+                className="absolute top-16 left-0"
+              />
             )}
           </div>
         ) : (
