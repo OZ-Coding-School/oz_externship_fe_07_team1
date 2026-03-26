@@ -7,6 +7,7 @@ interface GetUserInfoResponse {
   gender: 'M' | 'F'
   birthday: string
   profileImgUrl: string
+  role: 'USER' | 'STUDENT'
   createdAt: string
   updatedAt: string
 }
