@@ -51,7 +51,7 @@ export default function CommunityDetailPage() {
       <header className="mb-6 border-b border-gray-200">
         {/* 카테고리 연동 */}
         <div className="text-primary-default mb-2 text-sm font-semibold">
-          {post.category?.name || '카테고리'}
+          {post.category_name || '카테고리'}
         </div>
         {/* 제목 & 프로필 연동 (오른쪽 정렬) */}
         <div className="mb-6 flex items-center justify-between">
