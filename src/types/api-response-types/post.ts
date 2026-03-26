@@ -13,12 +13,10 @@ export interface PostDetailResponse {
   author: {
     id: number
     nickname: string
-    profile_img_url: string
+    profile_img_url: string | null
   }
-  category: {
-    id: number
-    name: string
-  }
+  category_id: number
+  category_name: string
   content: string
   view_count: number
   like_count: number
