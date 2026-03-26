@@ -22,7 +22,7 @@ export const createPostMOCK = http.post(
 
     const response: CreatePostResponse = {
       detail: '게시글이 성공적으로 등록되었습니다.',
-      pk: postPk++,
+      id: postPk++,
     }
 
     return HttpResponse.json(response, { status: 201 })
@@ -76,8 +76,8 @@ export const getPostDetailMOCK = http.get(
 export const updatePostMOCK = http.put(
   `${MSW_BASE_URL}/api/v1/posts/:postId`,
   async ({ params, request }) => {
-    const id = Number(params.id ?? 0)
+    const postId = Number(params.postId ?? 0)
     const body = (await request.json()) as any
-    return HttpResponse.json({ id, ...body })
+    return HttpResponse.json({ id: postId, ...body })
   }
 )

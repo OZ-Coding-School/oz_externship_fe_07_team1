@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createPostAPI,
   getPostCategoriesAPI,
@@ -58,10 +58,10 @@ function useCreatePost() {
 }
 
 // 게시글 상세 조회
-function usePostDetail(postId: string) {
+function usePostDetail(postId: number) {
   return useQuery({
     queryKey: ['postDetail', postId],
-    queryFn: () => getPostDetailAPI(Number(postId)),
+    queryFn: () => getPostDetailAPI(postId),
     enabled: !!postId,
   })
 }
@@ -69,6 +69,7 @@ function usePostDetail(postId: string) {
 // 게시글 수정
 function useUpdatePost() {
   const { showToast } = useToast()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({
@@ -79,7 +80,11 @@ function useUpdatePost() {
       params: UpdatePostRequest
     }) => updatePostAPI(postId, params),
 
-    onSuccess: () => {
+    onSuccess: (_, { postId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['postDetail', Number(postId)],
+      })
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
       showToast('success', '게시글 수정 완료', '게시글이 수정되었습니다!')
     },
 

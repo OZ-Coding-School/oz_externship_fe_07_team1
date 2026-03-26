@@ -1,6 +1,6 @@
 export interface CreatePostResponse {
   detail: string
-  pk: number
+  id: number
 }
 
 export interface CreatePostErrorResponse {
