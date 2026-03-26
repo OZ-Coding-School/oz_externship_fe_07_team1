@@ -1,18 +1,9 @@
 import { http, HttpResponse } from 'msw'
 import { postListData } from '../data/postListData'
-import { categoryData } from '../data/categoryData'
 import type { CreatePostRequest, CreatePostResponse } from '../../types'
 import { MSW_BASE_URL } from '../../constants/baseUrl'
 
 let postPk = 2
-
-// 카테고리 목록
-export const getPostCategoriesMOCK = http.get(
-  `${MSW_BASE_URL}/api/v1/posts/categories`,
-  () => {
-    return HttpResponse.json(categoryData, { status: 200 })
-  }
-)
 
 // 게시글 생성
 export const createPostMOCK = http.post(

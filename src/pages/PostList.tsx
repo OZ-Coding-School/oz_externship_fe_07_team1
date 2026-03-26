@@ -49,7 +49,7 @@ function PostList() {
   const navigate = useNavigate()
 
   const [page, setPage] = useState(1)
-  const [categoryId, setCategoryId] = useState(0)
+  const [categoryId, setCategoryId] = useState<number | undefined>(undefined)
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<
     'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
@@ -82,7 +82,7 @@ function PostList() {
     page,
     page_size: 10,
     search,
-    category_id: categoryId === 0 ? undefined : categoryId,
+    category_id: categoryId,
     sort,
   })
 
@@ -129,7 +129,7 @@ function PostList() {
             currentCategory={currentCategory}
             onCategoryClick={(cat) => {
               setCurrentCategory(cat)
-              setCategoryId(cat.id)
+              setCategoryId(cat.id === 0 ? undefined : cat.id)
             }}
             categoryList={categories}
           />

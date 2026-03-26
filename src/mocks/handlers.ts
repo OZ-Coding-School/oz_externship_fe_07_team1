@@ -1,6 +1,5 @@
 // handlers.ts
 import {
-  getPostCategoriesMOCK,
   createPostMOCK,
   getPostDetailMOCK,
   updatePostMOCK,
@@ -13,7 +12,6 @@ import {
 } from './handlers/image-handlers'
 
 export const handlers = [
-  getPostCategoriesMOCK,
   createPostMOCK,
   getPostDetailMOCK,
   updatePostMOCK,
