@@ -36,7 +36,7 @@ function PostCreate() {
     createPost(requestBody, {
       onSuccess: (res) => {
         // 수정: 등록 성공 후 상세 페이지(PostDetail)로 이동
-        navigate(`/posts/${res.pk}`)
+        navigate(`/posts/${res.id}`)
       },
     })
   }

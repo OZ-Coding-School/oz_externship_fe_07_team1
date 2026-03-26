@@ -49,7 +49,7 @@ function PostEdit() {
 
     setTitle(postDetail.title)
     setContent(postDetail.content)
-    setCategoryId(postDetail.category_id ?? null)
+    setCategoryId(postDetail.category?.id ?? null)
   }, [postDetail, state])
 
   const handleSubmit = () => {
