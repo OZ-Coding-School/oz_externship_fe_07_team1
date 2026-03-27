@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router'
 import {
   createPostAPI,
   getPostCategoriesAPI,
   getPostDetailAPI,
   updatePostAPI,
   getPostsAPI,
+  deletePostAPI,
 } from '../../api/postAPI'
 import { useToast } from '../useToast'
 import type {
@@ -98,10 +100,36 @@ function useUpdatePost() {
   })
 }
 
+// 게시글 삭제
+function useDeletePost() {
+  const { showToast } = useToast()
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: (postId: number) => deletePostAPI(postId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
+      showToast('success', '삭제 완료', '게시글이 삭제되었습니다.')
+      navigate('/community')
+    },
+
+    onError: () => {
+      showToast(
+        'default',
+        '게시글 삭제 실패',
+        '게시글 삭제 중 오류가 발생했습니다.'
+      )
+    },
+  })
+}
+
 export {
   usePostCategories,
   usePosts,
   useCreatePost,
   usePostDetail,
   useUpdatePost,
+  useDeletePost,
 }
