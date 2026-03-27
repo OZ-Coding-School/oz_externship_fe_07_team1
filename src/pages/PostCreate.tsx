@@ -34,9 +34,15 @@ function PostCreate() {
     }
 
     createPost(requestBody, {
-      onSuccess: (res) => {
-        // 수정: 등록 성공 후 상세 페이지(PostDetail)로 이동
-        navigate(`/posts/${res.id}`)
+      onSuccess: (res: any) => {
+        // 수정: 등록 성공 후 ID가 있으면 상세로, 없으면 목록(/posts)으로 이동
+        const newId = res?.id || res?.post_id || res?.data?.id
+
+        if (newId) {
+          navigate(`/posts/${newId}`)
+        } else {
+          navigate('/posts')
+        }
       },
     })
   }

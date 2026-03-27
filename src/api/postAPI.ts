@@ -60,6 +60,12 @@ async function unlikePostAPI(postId: number) {
   return response.data
 }
 
+// 게시글 삭제
+async function deletePostAPI(postId: number) {
+  const response = await apiInstance.delete(`posts/${postId}`)
+  return response.data
+}
+
 export {
   getPostsAPI,
   getPostCategoriesAPI,
@@ -68,4 +74,5 @@ export {
   getPostDetailAPI,
   likePostAPI,
   unlikePostAPI,
+  deletePostAPI,
 }

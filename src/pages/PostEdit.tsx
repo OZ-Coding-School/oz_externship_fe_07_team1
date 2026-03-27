@@ -26,7 +26,7 @@ function PostEdit() {
   const { data } = usePostCategories()
   const categories = data?.length ? data : categoryData
 
-  const { data: postDetail } = usePostDetail(postId)
+  const { data: postDetail, isLoading } = usePostDetail(postId)
   const { mutate: updatePost } = useUpdatePost()
 
   const state = location.state as
@@ -49,7 +49,7 @@ function PostEdit() {
 
     setTitle(postDetail.title)
     setContent(postDetail.content)
-    setCategoryId(postDetail.category?.id ?? null)
+    setCategoryId(postDetail.category_id ?? null)
   }, [postDetail, state])
 
   const handleSubmit = () => {
@@ -88,6 +88,7 @@ function PostEdit() {
   }
 
   if (!postId || Number.isNaN(postId)) return null
+  if (isLoading) return <div className="py-20 text-center">불러오는 중...</div>
 
   return (
     <div className="bg-surface-default flex w-full justify-center py-20">
@@ -107,7 +108,7 @@ function PostEdit() {
           <Button
             type="submit"
             onClick={handleSubmit}
-            className="bg-primary-default hover:bg-primary-hover active:bg-primary-active rounded-4 h-12 w-32 text-white"
+            className="bg-primary-default hover:bg-primary-hover active:bg-primary-active rounded-1 h-12 w-32 text-white"
           >
             완료
           </Button>

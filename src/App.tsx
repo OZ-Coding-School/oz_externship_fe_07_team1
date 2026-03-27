@@ -38,7 +38,7 @@ function App() {
         <Route path="/posts/create" element={<PostCreate />} />
 
         {/* 게시글 수정 페이지 */}
-        <Route path="/posts/edit/:id" element={<PostEdit />} />
+        <Route path="/posts/:id/edit" element={<PostEdit />} />
       </Route>
 
       {/* UI 테스트 페이지 */}
