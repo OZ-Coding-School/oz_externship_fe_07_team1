@@ -1,5 +1,6 @@
 export interface CommentItemResponse {
   id: number
+  post?: number
   author: {
     id: number
     nickname: string

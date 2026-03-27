@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from 'react-router'
 import { CommentSort } from '../components/CommunityCommentSort'
 import { CommentInput } from '../components/CommentInput'
 import { CommentItem } from '../components/CommunityCommentItem'
@@ -10,18 +11,17 @@ import {
   useDeleteComment,
 } from '../hooks/queries/useCommentQueries'
 
-// 임시로 postId 1번 게시글이라고 가정하고 렌더링
-const TEMP_POST_ID = 1
-
 export const CommentSection = () => {
+  const { id } = useParams()
+  const postId = Number(id)
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
   // MSW 서버에서 진짜 데이터 땡겨오기
-  const { data, isLoading } = useComments(TEMP_POST_ID)
-  const { mutate: createComment } = useCreateComment(TEMP_POST_ID)
-  const { mutate: deleteComment } = useDeleteComment(TEMP_POST_ID)
+  const { data, isLoading } = useComments(postId)
+  const { mutate: createComment } = useCreateComment(postId)
+  const { mutate: deleteComment } = useDeleteComment(postId)
 
   // 데이터가 아직 안 왔으면 로딩 표시
   if (isLoading) {
@@ -76,7 +76,6 @@ export const CommentSection = () => {
           <CommentItem
             key={comment.id}
             authorName={comment.author.nickname}
-            // 서버에서 온 날짜를 예쁘게 포맷팅
             date={new Date(comment.created_at).toLocaleDateString()}
             content={comment.content}
             isMyComment

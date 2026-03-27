@@ -1,4 +1,5 @@
 import { apiInstance } from './apiInstance'
+
 import type {
   CreatePostRequest,
   CreatePostResponse,
