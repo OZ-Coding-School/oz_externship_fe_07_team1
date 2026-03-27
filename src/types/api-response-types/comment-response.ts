@@ -1,15 +1,9 @@
 export interface CommentItemResponse {
   id: number
-  post?: number
-  author: {
-    id: number
-    nickname: string
-    profile_img_url: string
-  }
-  tagged_users: {
-    id: number
-    nickname: string
-  }[]
+  post: number
+  author: number
+  nickname: string
+  profile_img_url?: string
   content: string
   created_at: string
   updated_at: string

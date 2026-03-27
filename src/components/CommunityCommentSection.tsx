@@ -75,7 +75,7 @@ export const CommentSection = () => {
         {sortedComments.map((comment) => (
           <CommentItem
             key={comment.id}
-            authorName={comment.author.nickname}
+            authorName={comment.nickname}
             date={new Date(comment.created_at).toLocaleDateString()}
             content={comment.content}
             isMyComment
