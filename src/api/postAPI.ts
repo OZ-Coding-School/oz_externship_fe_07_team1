@@ -1,4 +1,6 @@
 import { apiInstance } from './apiInstance'
+import type { GetCommentsResponse } from '../types/api-response-types/comment-response'
+
 import type {
   CreatePostRequest,
   CreatePostResponse,
@@ -65,6 +67,13 @@ async function deletePostAPI(postId: number) {
   const response = await apiInstance.delete(`posts/${postId}`)
   return response.data
 }
+// 댓글 목록 조회
+async function getCommentListAPI(postId: number) {
+  const response = await apiInstance.get<GetCommentsResponse>(
+    `posts/${postId}/comments`
+  )
+  return response.data
+}
 
 export {
   getPostsAPI,
@@ -75,4 +84,5 @@ export {
   likePostAPI,
   unlikePostAPI,
   deletePostAPI,
+  getCommentListAPI,
 }
