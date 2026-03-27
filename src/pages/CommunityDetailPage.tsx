@@ -6,6 +6,7 @@ import { CommentSection } from '../components/CommunityCommentSection'
 import { Modal } from '../components/Modal'
 import { MiniPostActionButton } from '../components/MiniPostActionButton'
 import { usePostDetail, useDeletePost } from '../hooks/queries/usePostQueries'
+import { useUserInfoStore } from '../store/useUserInfoStore'
 
 // URL만 골라내서 <a> 태그로 바꿔주는 함수 추가
 const renderContentWithLinks = (text: string) => {
@@ -34,7 +35,7 @@ const renderContentWithLinks = (text: string) => {
 export default function CommunityDetailPage() {
   const { id } = useParams() // 주소창에서 /posts/1 이면 1을 가져옴
   const navigate = useNavigate() // 페이지 이동용
-  const myUserId = 1 // 내 유저 ID (작성자 확인용 임시 데이터)
+  const { userInfo } = useUserInfoStore() // 로그인한 유저 정보 가져오기
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
 
@@ -46,6 +47,9 @@ export default function CommunityDetailPage() {
   if (isLoading) return <div className="py-20 text-center">불러오는 중...</div>
   if (!post)
     return <div className="py-20 text-center">게시글을 찾을 수 없습니다.</div>
+
+  // 본인 확인 로직
+  const isAuthor = userInfo?.id === post.author.id
 
   return (
     <div className="mx-auto w-full max-w-200 px-4 py-10">
@@ -85,7 +89,7 @@ export default function CommunityDetailPage() {
             <span>{new Date(post.created_at).toLocaleDateString()}</span>
           </div>
 
-          {post.author.id === myUserId && (
+          {isAuthor && (
             <div className="flex items-center">
               <MiniPostActionButton
                 type="edit"
