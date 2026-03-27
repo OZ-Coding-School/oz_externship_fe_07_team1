@@ -1,3 +1,4 @@
+import { useLogout } from '../../hooks/queries/useAuthQueries'
 import { cn } from '../../lib/utils'
 import type { GetUserInfoResponse } from '../../types/api-response-types/user'
 
@@ -10,6 +11,16 @@ const USER_MENU_BTN_STYLE =
   'hover:text-primary-default hover:bg-primary-100 px-2 py-2 text-sm text-left size-full cursor-pointer transition-colors duration-200'
 
 function UserMenu({ userInfo, className }: UserMenuProps) {
+  const { mutate: logout } = useLogout()
+
+  const handleLogoutBtnClicked = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        window.location.href = 'https://my.ozcodingschool.site'
+      },
+    })
+  }
+
   return (
     <div
       className={cn(
@@ -26,7 +37,12 @@ function UserMenu({ userInfo, className }: UserMenuProps) {
         <a href="https://my.ozcodingschool.site/mypage">
           <button className={USER_MENU_BTN_STYLE}>마이페이지</button>
         </a>
-        <button className={USER_MENU_BTN_STYLE}>로그아웃</button>
+        <button
+          className={USER_MENU_BTN_STYLE}
+          onClick={handleLogoutBtnClicked}
+        >
+          로그아웃
+        </button>
       </div>
     </div>
   )
