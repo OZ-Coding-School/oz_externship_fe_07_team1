@@ -1,4 +1,5 @@
 import type { GetAccessTokenResponse } from '../types/api-response-types/auth'
+import { apiInstance } from './apiInstance'
 import { instance } from './instance'
 
 async function getRefreshTokenAPI() {
@@ -8,4 +9,9 @@ async function getRefreshTokenAPI() {
   return response.data
 }
 
-export { getRefreshTokenAPI }
+async function getLogoutAPI() {
+  const response = await apiInstance.post('accounts/logout')
+  return response.data
+}
+
+export { getRefreshTokenAPI, getLogoutAPI }
