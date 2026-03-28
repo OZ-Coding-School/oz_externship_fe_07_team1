@@ -7,7 +7,7 @@ let postPk = 2
 
 // 게시글 생성
 export const createPostMOCK = http.post(
-  `${MSW_BASE_URL}/api/v1/posts`,
+  `${MSW_BASE_URL}/posts`,
   async ({ request }) => {
     const body = (await request.json()) as CreatePostRequest
     const errors: Record<string, string[]> = {}
@@ -31,7 +31,7 @@ export const createPostMOCK = http.post(
 
 // 게시글 상세 조회
 export const getPostDetailMOCK = http.get(
-  `${MSW_BASE_URL}/api/v1/posts/:id`,
+  `${MSW_BASE_URL}/posts/:id`,
   ({ params }) => {
     const id = Number(params.id ?? 0)
     const post = postListData.find((p: any) => Number(p.id) === id)
@@ -76,7 +76,7 @@ export const getPostDetailMOCK = http.get(
 
 // 게시글 수정
 export const updatePostMOCK = http.put(
-  `${MSW_BASE_URL}/api/v1/posts/:postId`,
+  `${MSW_BASE_URL}/posts/:postId`,
   async ({ params, request }) => {
     const postId = Number(params.postId ?? 0)
     const body = (await request.json()) as any
@@ -85,7 +85,7 @@ export const updatePostMOCK = http.put(
 )
 
 export const likePostMOCK = http.post(
-  `${MSW_BASE_URL}/api/v1/posts/:id/like`,
+  `${MSW_BASE_URL}/posts/:id/like`,
   ({ params }) => {
     const id = Number(params.id ?? 0)
     const post = postListData.find((p: any) => Number(p.id) === id)
@@ -98,7 +98,7 @@ export const likePostMOCK = http.post(
 )
 
 export const unlikePostMOCK = http.delete(
-  `${MSW_BASE_URL}/api/v1/posts/:id/like`,
+  `${MSW_BASE_URL}/posts/:id/like`,
   ({ params }) => {
     const id = Number(params.id ?? 0)
     const post = postListData.find((p: any) => Number(p.id) === id)
