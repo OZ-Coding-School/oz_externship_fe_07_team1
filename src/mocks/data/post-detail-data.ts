@@ -16,6 +16,7 @@ export const mockPostDetailData: PostDetailResponse = {
 
   view_count: 60,
   like_count: 2,
+  is_liked: false,
 
   created_at: '2025-06-12T19:00:00+09:00',
   updated_at: '2025-06-12T19:00:00+09:00',

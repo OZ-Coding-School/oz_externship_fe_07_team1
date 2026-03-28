@@ -20,6 +20,7 @@ export interface PostDetailResponse {
   content: string
   view_count: number
   like_count: number
+  is_liked: boolean
   created_at: string
   updated_at: string
 }
