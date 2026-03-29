@@ -41,7 +41,7 @@ function PostCard({ post, onClick }: Props) {
   return (
     <div
       onClick={onClick}
-      className="border-gray-250 flex h-52 w-full cursor-pointer gap-6 border-b py-8 transition hover:bg-gray-100"
+      className="border-gray-250 flex h-52 w-full cursor-pointer gap-6 border-b px-8 py-8 transition hover:bg-gray-100"
     >
       <div className="flex w-full flex-col justify-between">
         <div className="flex flex-col gap-3">
