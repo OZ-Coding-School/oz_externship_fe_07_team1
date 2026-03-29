@@ -7,7 +7,7 @@ let postPk = 2
 
 // 게시글 생성
 export const createPostMOCK = http.post(
-  `${MSW_BASE_URL}/api/v1/posts`,
+  `${MSW_BASE_URL}/posts`,
   async ({ request }) => {
     const body = (await request.json()) as CreatePostRequest
     const errors: Record<string, string[]> = {}
@@ -46,6 +46,7 @@ export const getPostDetailMOCK = http.get(
         comment_count: 0,
         view_count: 0,
         like_count: 0,
+        is_liked: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         category_id: 1,
@@ -64,7 +65,8 @@ export const getPostDetailMOCK = http.get(
       thumbnail_img_url: post.imageUrl || null,
       comment_count: Number(post.comments),
       view_count: Number(post.views),
-      like_count: Number(post.likes),
+      like_count: Number(post.like_count ?? 0),
+      is_liked: Boolean(post.is_liked ?? false),
       created_at: post.createdAt,
       updated_at: post.createdAt,
       category_id: Number(post.category.id),
@@ -74,10 +76,36 @@ export const getPostDetailMOCK = http.get(
 
 // 게시글 수정
 export const updatePostMOCK = http.put(
-  `${MSW_BASE_URL}/api/v1/posts/:postId`,
+  `${MSW_BASE_URL}/posts/:postId`,
   async ({ params, request }) => {
     const postId = Number(params.postId ?? 0)
     const body = (await request.json()) as any
     return HttpResponse.json({ id: postId, ...body })
+  }
+)
+
+export const likePostMOCK = http.post(
+  `${MSW_BASE_URL}/posts/:id/like`,
+  ({ params }) => {
+    const id = Number(params.id ?? 0)
+    const post = postListData.find((p: any) => Number(p.id) === id)
+    if (post) {
+      post.is_liked = true
+      post.like_count += 1
+    }
+    return HttpResponse.json({ success: true })
+  }
+)
+
+export const unlikePostMOCK = http.delete(
+  `${MSW_BASE_URL}/posts/:id/like`,
+  ({ params }) => {
+    const id = Number(params.id ?? 0)
+    const post = postListData.find((p: any) => Number(p.id) === id)
+    if (post) {
+      post.is_liked = false
+      post.like_count = Math.max(0, post.like_count - 1)
+    }
+    return HttpResponse.json({ success: true })
   }
 )

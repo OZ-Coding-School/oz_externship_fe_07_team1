@@ -5,7 +5,11 @@ import LikeButton from '../components/LikeButton'
 import { CommentSection } from '../components/CommunityCommentSection'
 import { Modal } from '../components/Modal'
 import { MiniPostActionButton } from '../components/MiniPostActionButton'
-import { usePostDetail, useDeletePost } from '../hooks/queries/usePostQueries'
+import {
+  usePostDetail,
+  useDeletePost,
+  usePostLike,
+} from '../hooks/queries/usePostQueries'
 import { useUserInfoStore } from '../store/useUserInfoStore'
 
 // URL만 골라내서 <a> 태그로 바꿔주는 함수 추가
@@ -37,10 +41,10 @@ export default function CommunityDetailPage() {
   const navigate = useNavigate() // 페이지 이동용
   const { userInfo } = useUserInfoStore() // 로그인한 유저 정보 가져오기
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [isLiked, setIsLiked] = useState(false)
 
-  //msw 요청
+  // 모든 훅을 최상단에 배치 (Invalid Hook Call 에러 해결)
   const { data: post, isLoading } = usePostDetail(Number(id))
+  const { mutate: toggleLike } = usePostLike()
   const { mutate: deletePost } = useDeletePost()
 
   // 로딩 중이거나 데이터 없을 때 화면
@@ -50,6 +54,15 @@ export default function CommunityDetailPage() {
 
   // 본인 확인 로직
   const isAuthor = userInfo?.id === post.author.id
+
+  // 좋아요 버튼 클릭 핸들러
+  const handleLikeClick = () => {
+    if (!id) return
+
+    toggleLike({
+      postId: Number(id),
+    })
+  }
 
   return (
     <div className="mx-auto w-full max-w-200 px-4 py-10">
@@ -115,9 +128,9 @@ export default function CommunityDetailPage() {
       {/* 좋아요 / 공유 버튼 */}
       <div className="mb-8 flex justify-end gap-2 border-b border-gray-200 pb-8">
         <LikeButton
-          status={isLiked ? 'enabled' : 'disabled'}
-          likeCount={post.like_count} // 좋아요 수 데이터에서 가져오기
-          onClick={() => setIsLiked(!isLiked)}
+          status={post.is_liked ? 'enabled' : 'disabled'}
+          likeCount={post.like_count}
+          onClick={handleLikeClick}
         />
         <ShareButton />
       </div>
@@ -130,11 +143,7 @@ export default function CommunityDetailPage() {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => {
           // 진짜 삭제 진행 후 목록 이동
-          deletePost(Number(id), {
-            onSuccess: () => {
-              navigate('/posts')
-            },
-          })
+          deletePost(Number(id))
           setIsDeleteModalOpen(false)
         }}
         confirmText="삭제"
