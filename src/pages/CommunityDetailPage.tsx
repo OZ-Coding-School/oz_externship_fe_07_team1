@@ -11,30 +11,7 @@ import {
   usePostLike,
 } from '../hooks/queries/usePostQueries'
 import { useUserInfoStore } from '../store/useUserInfoStore'
-
-// URL만 골라내서 <a> 태그로 바꿔주는 함수 추가
-const renderContentWithLinks = (text: string) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g // 인터넷 주소 찾는 공식
-
-  return text.split(urlRegex).map((part, index) => {
-    // 만약 잘라낸 조각이 인터넷 주소라면 링크로 만들기
-    if (part.match(urlRegex)) {
-      return (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary-default underline"
-        >
-          {part}
-        </a>
-      )
-    }
-    // 주소가 아니면 그냥 일반 글씨로 냅두기
-    return part
-  })
-}
+import ReactMarkdown from 'react-markdown'
 
 export default function CommunityDetailPage() {
   const { id } = useParams() // 주소창에서 /posts/1 이면 1을 가져옴
@@ -122,7 +99,23 @@ export default function CommunityDetailPage() {
 
       {/* 본문 연동 */}
       <main className="min-h-50 pb-10 text-base whitespace-pre-wrap text-gray-900">
-        {renderContentWithLinks(post.content)}
+        <ReactMarkdown
+          components={{
+            a: ({ ...props }) => (
+              <a
+                {...props}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-default underline"
+              />
+            ),
+            img: ({ ...props }) => (
+              <img {...props} className="my-4 max-w-full rounded-lg" />
+            ),
+          }}
+        >
+          {post.content}
+        </ReactMarkdown>
       </main>
 
       {/* 좋아요 / 공유 버튼 */}

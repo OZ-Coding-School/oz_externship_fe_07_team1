@@ -81,7 +81,6 @@ export {
   createPostAPI,
   updatePostAPI,
   getPostDetailAPI,
-  deletePostAPI,
   likePostAPI,
   unlikePostAPI,
   deletePostAPI,
