@@ -40,7 +40,10 @@ function PostList() {
     ? [{ id: 0, name: '전체' }, ...categoryData]
     : [{ id: 0, name: '전체' }]
 
-  const [currentCategory, setCurrentCategory] = useState(categories[0])
+  const [currentCategory, setCurrentCategory] = useState({
+    id: 0,
+    name: '전체',
+  })
 
   useEffect(() => {
     if (categoryData && categoryData.length > 0) {

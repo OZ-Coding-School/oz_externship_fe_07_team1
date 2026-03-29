@@ -29,6 +29,28 @@ export const createPostMOCK = http.post(
   }
 )
 
+// 게시글 목록 조회
+export const getPostListMOCK = http.get(`${MSW_BASE_URL}/posts`, () => {
+  return HttpResponse.json({
+    results: postListData,
+    count: postListData.length,
+  })
+})
+
+// 카테고리 목록 조회
+export const getPostCategoriesMOCK = http.get(
+  `${MSW_BASE_URL}/posts/categories`,
+  () => {
+    return HttpResponse.json({
+      categories: [
+        { id: 1, name: '자유 게시판' },
+        { id: 2, name: '질문 게시판' },
+        { id: 3, name: '구인/협업' },
+      ],
+    })
+  }
+)
+
 // 게시글 상세 조회
 export const getPostDetailMOCK = http.get(
   `${MSW_BASE_URL}/posts/:id`,
