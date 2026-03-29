@@ -9,42 +9,6 @@ import { usePosts, usePostCategories } from '../hooks/queries/usePostQueries'
 import CategoryFilterBar from '../components/CategoryFilterBar'
 import { cn } from '../lib/utils'
 
-export interface PostListParams {
-  categoryId?: number
-  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
-  search?: string
-  page?: number
-  pageSize?: number
-}
-
-export interface Post {
-  id: number
-  author: {
-    id: number
-    nickname: string
-    profile_img_url: string
-  }
-  category: {
-    id: number
-    name: string
-  }
-  title: string
-  thumbnail_img_url: string | null
-  content_preview: string
-  comment_count: number
-  view_count: number
-  like_count: number
-  created_at: string
-  updated_at: string
-}
-
-export interface PostListResponse {
-  count: number
-  next: string | null
-  previous: string | null
-  results: Post[]
-}
-
 function PostList() {
   const navigate = useNavigate()
 
@@ -86,7 +50,6 @@ function PostList() {
     }
   }, [categoryData, categoryId])
 
-  // 게시글 목록 조회
   const { data, isLoading } = usePosts({
     page,
     page_size: 10,
@@ -95,21 +58,16 @@ function PostList() {
     sort,
   })
 
-  // 실서버 응답 구조(results)에 맞춰 데이터 추출
   const posts = (data as any)?.results ?? []
-
-  // 전체 게시글 수 기반 페이지 계산
   const totalPages = Math.ceil(((data as any)?.count ?? 0) / 10)
 
   return (
     <div className="flex w-full justify-center pt-56">
       <div className="flex w-236 flex-col gap-13">
-        {/* 타이틀 */}
         <h1 className="text-text-main text-3xl leading-10 font-bold">
           커뮤니티
         </h1>
 
-        {/* 검색 영역 */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -130,7 +88,7 @@ function PostList() {
               </button>
 
               {isSearchTypeOpen && (
-                <div className="absolute top-11 left-0 z-50 flex w-36 flex-col rounded-3xl border border-gray-100 bg-white p-2 shadow-xl outline-none">
+                <div className="absolute top-11 left-0 z-50 -ml-12 flex w-36 flex-col rounded-3xl border border-gray-100 bg-white p-2 shadow-xl outline-none">
                   {searchOptions.map((option) => (
                     <button
                       key={option}
@@ -139,7 +97,7 @@ function PostList() {
                         setIsSearchTypeOpen(false)
                       }}
                       className={cn(
-                        'flex h-12 w-full items-center justify-center rounded-2xl px-4 text-center text-base transition-colors hover:bg-gray-50',
+                        'flex h-12 w-full items-center justify-center rounded-2xl px-2 text-center text-base transition-colors hover:bg-gray-50',
                         searchType === option
                           ? 'text-primary-default bg-purple-50 font-bold'
                           : 'text-text-main'
@@ -157,7 +115,6 @@ function PostList() {
             </div>
           </div>
 
-          {/* 글쓰기 */}
           <Button
             onClick={() => navigate('/posts/create')}
             className="flex h-12 w-30 items-center justify-center gap-2 whitespace-nowrap"
@@ -167,7 +124,6 @@ function PostList() {
           </Button>
         </div>
 
-        {/* 카테고리 + 정렬 */}
         <div className="border-gray-250 flex items-center justify-between border-b pb-3">
           <CategoryFilterBar
             currentCategory={currentCategory}
@@ -178,7 +134,6 @@ function PostList() {
             categoryList={categories}
           />
 
-          {/* 정렬 드롭다운 리스트 */}
           <div className="relative">
             <button
               type="button"
@@ -192,7 +147,7 @@ function PostList() {
             </button>
 
             {isSortOpen && (
-              <div className="absolute top-10 right-0 z-50 flex w-40 flex-col rounded-[24px] border border-gray-100 bg-white p-2 shadow-xl outline-none">
+              <div className="absolute top-10 left-1/2 z-50 flex w-40 -translate-x-[60%] flex-col items-center rounded-[24px] border border-gray-100 bg-white p-2 shadow-xl outline-none">
                 {sortList.map((item) => (
                   <button
                     key={item.value}
@@ -201,7 +156,7 @@ function PostList() {
                       setIsSortOpen(false)
                     }}
                     className={cn(
-                      'flex h-12 w-full items-center justify-center rounded-[16px] px-4 text-center text-base transition-colors',
+                      'flex h-12 w-full items-center justify-center rounded-[16px] px-2 text-base transition-colors',
                       sort === item.value
                         ? 'text-primary-default bg-purple-50 font-bold'
                         : 'text-text-main hover:bg-gray-50'
@@ -215,7 +170,6 @@ function PostList() {
           </div>
         </div>
 
-        {/* 게시글 리스트 */}
         <div className="border-gray-250 border-t border-b">
           <div className="flex flex-col">
             {isLoading ? (
@@ -238,7 +192,6 @@ function PostList() {
           </div>
         </div>
 
-        {/* 페이지네이션 */}
         <div className="mt-3 mb-52">
           <Pagination
             currentPage={page}
