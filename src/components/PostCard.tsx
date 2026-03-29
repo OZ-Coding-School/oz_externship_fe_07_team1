@@ -1,4 +1,4 @@
-import { ThumbsUp, MessageCircle, Eye } from 'lucide-react'
+import { ThumbsUp, MessageCircle, Eye, User } from 'lucide-react'
 
 export interface PostCardProps {
   id: string
@@ -74,17 +74,9 @@ function PostCard({ post, onClick }: Props) {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              {post.author.profile_img_url ? (
-                <img
-                  src={post.author.profile_img_url}
-                  alt="author-profile-image"
-                  className="size-6 rounded-full object-cover"
-                />
-              ) : (
-                <div className="flex size-6 items-center justify-center rounded-full bg-gray-200">
-                  👤
-                </div>
-              )}
+              <div className="flex size-6 items-center justify-center rounded-full bg-gray-200">
+                <User className="size-4 text-gray-500" />
+              </div>
               <span className="text-12 text-text-sub">
                 {post.author.nickname}
               </span>
