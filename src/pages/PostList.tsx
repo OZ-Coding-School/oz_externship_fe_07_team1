@@ -170,7 +170,7 @@ function PostList() {
           </div>
         </div>
 
-        <div className="border-gray-250 border-t border-b">
+        <div className="border-gray-250 border-b">
           <div className="flex flex-col">
             {isLoading ? (
               <div className="text-14 text-text-light py-12 text-center">
