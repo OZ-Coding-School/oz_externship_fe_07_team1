@@ -6,6 +6,7 @@ import type {
   CreatePostResponse,
   PostCategory,
   PostDetailResponse,
+  PostListResponse,
   UpdatePostRequest,
 } from '../types'
 
@@ -18,7 +19,7 @@ async function getPostsAPI(params: {
   category_id?: number
   sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
 }) {
-  const response = await apiInstance.get('/posts', {
+  const response = await apiInstance.get<PostListResponse>('/posts', {
     params,
   })
   return response.data
