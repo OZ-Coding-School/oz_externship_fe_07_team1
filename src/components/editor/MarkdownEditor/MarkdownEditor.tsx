@@ -19,14 +19,12 @@ export default function MarkdownEditor({
   value,
   setValue,
 }: MarkdownEditorProps) {
-  // 에디터
   const editorWrapperRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [pendingPlaceholder, setPendingPlaceholder] = useState<string>('')
   const { imgUrl } = useImageUpload(selectedFile)
 
-  // presigned url 발급 + S3 이미지 업로드 로직 관리
   useEffect(() => {
     if (!selectedFile || !pendingPlaceholder || !imgUrl) return
 
@@ -37,14 +35,12 @@ export default function MarkdownEditor({
     setSelectedFile(null)
   }, [selectedFile, pendingPlaceholder, imgUrl, value])
 
-  // textarea 찾기
   const getTextarea = () => {
     return editorWrapperRef.current?.querySelector(
       'textarea'
     ) as HTMLTextAreaElement | null
   }
 
-  // 커서
   const updateSelection = (
     nextValue: string,
     selectionStart: number,
@@ -61,7 +57,6 @@ export default function MarkdownEditor({
     })
   }
 
-  // 인라인
   const applyInlineFormat = (before: string, after: string = before) => {
     const textarea = getTextarea()
     const currentValue = value ?? ''
@@ -119,7 +114,6 @@ export default function MarkdownEditor({
     updateSelection(nextValue, nextSelectionStart, nextSelectionEnd)
   }
 
-  // 리스트
   const applyLinePrefix = (type: 'ul' | 'ol') => {
     const textarea = getTextarea()
     const currentValue = value ?? ''
@@ -175,7 +169,6 @@ export default function MarkdownEditor({
     updateSelection(nextValue, lineStart, lineStart + replacedBlock.length)
   }
 
-  // 링크
   const insertLink = () => {
     const textarea = getTextarea()
     const currentValue = value ?? ''
@@ -193,12 +186,32 @@ export default function MarkdownEditor({
     updateSelection(nextValue, start + 1, start + 1 + selectedText.length)
   }
 
-  // 이미지 선택창 열기
+  const clearFormat = () => {
+    const textarea = getTextarea()
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+
+    const text = value.slice(start, end)
+
+    const cleaned = text
+      .replace(/(\*\*|\*|~~|`|<u>|<\/u>)/g, '')
+      .replace(/^\s*[-*]\s/gm, '')
+      .replace(/^\s*\d+\.\s/gm, '')
+
+    const nextValue = value.slice(0, start) + cleaned + value.slice(end)
+
+    updateSelection(nextValue, start, start + cleaned.length)
+  }
+
+  const handleUndo = () => document.execCommand('undo')
+  const handleRedo = () => document.execCommand('redo')
+
   const openImageUpload = () => {
     fileInputRef.current?.click()
   }
 
-  // 이미지 업로드
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     const textarea = getTextarea()
@@ -221,7 +234,6 @@ export default function MarkdownEditor({
   }
 
   return (
-    // 전체 박스
     <div className="bg-surface-default border-gray-250 rounded-5 flex w-236 flex-col overflow-hidden border">
       <input
         ref={fileInputRef}
@@ -231,7 +243,6 @@ export default function MarkdownEditor({
         onChange={handleImageUpload}
       />
 
-      {/* 툴바 */}
       <div className="bg-surface-default border-gray-250 rounded-t-5 flex h-25 w-full items-center gap-5 overflow-hidden border-b p-8">
         <EditorToolbar
           onBold={() => applyInlineFormat('**')}
@@ -241,11 +252,13 @@ export default function MarkdownEditor({
           onLink={insertLink}
           onImage={openImageUpload}
           onUnorderedList={() => applyLinePrefix('ul')}
-          onOrderedList={() => applyLinePrefix('ol')}
+          onUndo={handleUndo}
+          onRedo={handleRedo}
+          onCode={() => applyInlineFormat('`')}
+          onClear={clearFormat}
         />
       </div>
 
-      {/* 에디터 */}
       <div
         ref={editorWrapperRef}
         className="custom-editor-container"
