@@ -4,6 +4,7 @@ import {
   createCommentAPI,
   deleteCommentAPI,
   updateCommentAPI,
+  searchUserAPI,
 } from '../../api/commentAPI'
 import type { CreateCommentRequest } from '../../types'
 
@@ -47,5 +48,15 @@ export function useUpdateComment(postId: number) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', postId] })
     },
+  })
+}
+export function useSearchUser(nickname: string) {
+  return useQuery({
+    queryKey: ['searchUser', nickname],
+    queryFn: () => searchUserAPI(nickname),
+    // nickname이 빈 칸이 아닐 때만 API 쏘기 (서버 과부하 방지)
+    enabled: !!nickname,
+    // 키보드 칠 때마다 너무 API 쏘지 않게 살짝 딜레이를 주는 캐시 설정
+    staleTime: 1000 * 60 * 5,
   })
 }

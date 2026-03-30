@@ -37,3 +37,10 @@ export async function updateCommentAPI(
   )
   return response.data
 }
+
+export async function searchUserAPI(nickname: string) {
+  const response = await apiInstance.get(`/posts/user/search`, {
+    params: { nickname },
+  })
+  return response.data
+}

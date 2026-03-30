@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { CommentButton } from './CommentButton'
 import { cn } from '../lib/utils'
-import { MOCK_MENTION_USERS } from '../mocks/data/users'
+import { useSearchUser } from '../hooks/queries/useCommentQueries'
 
 interface CommentInputProps {
   onSubmit?: (content: string) => void
@@ -14,6 +14,7 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   const [showMentionList, setShowMentionList] = useState(false)
   const [mentionFilter, setMentionFilter] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const { data: searchResults = [] } = useSearchUser(mentionFilter)
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -69,26 +70,35 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   }
   return (
     <div className="relative w-full">
-      {' '}
       {showMentionList && (
         <div className="absolute bottom-full left-0 z-50 mb-2 w-[280px] rounded-xl bg-white p-3 shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]">
-          <ul className="flex max-h-[116px] flex-col gap-[10px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#BDBDBD] [&::-webkit-scrollbar-track]:bg-transparent">
-            {MOCK_MENTION_USERS.filter((u) =>
-              u.nickname.includes(mentionFilter)
-            ).map((user) => (
+          <ul
+            className={cn(
+              'flex max-h-28 flex-col gap-2.5 overflow-y-auto pr-1',
+              '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent',
+              '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400'
+            )}
+          >
+            {/* 서버에서 받아온 유저 목록 */}
+            {searchResults.map((user: any) => (
               <li key={user.id}>
                 <button
                   type="button"
                   onClick={() => handleUserSelect(user.nickname)}
-                  className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm transition-colors hover:bg-gray-200"
+                  className={cn(
+                    'flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm',
+                    'transition-colors hover:bg-gray-200'
+                  )}
                 >
                   <div className="h-6 w-6 shrink-0 overflow-hidden rounded-full bg-gray-100">
-                    {user.profile_img_url && (
+                    {user.profile_img_url ? (
                       <img
                         src={user.profile_img_url}
                         alt={user.nickname}
                         className="h-full w-full object-cover"
                       />
+                    ) : (
+                      <div className="h-full w-full bg-gray-200"></div>
                     )}
                   </div>
                   <span className="font-medium text-gray-900">
@@ -98,10 +108,8 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
               </li>
             ))}
 
-            {/* 검색 결과가 없을 때 */}
-            {MOCK_MENTION_USERS.filter((u) =>
-              u.nickname.includes(mentionFilter)
-            ).length === 0 && (
+            {/* 검색 결과가 없을 때 방어 로직 */}
+            {searchResults.length === 0 && mentionFilter.trim() !== '' && (
               <li className="p-3 text-center text-xs text-gray-400">
                 검색 결과가 없습니다.
               </li>
