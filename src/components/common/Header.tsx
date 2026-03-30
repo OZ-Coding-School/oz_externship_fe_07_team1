@@ -20,7 +20,13 @@ function Header() {
       <section className="flex h-16 w-full min-w-170 items-center justify-between px-10 text-lg whitespace-nowrap text-gray-600 md:px-20 xl:px-90">
         <div className="flex items-center gap-15">
           <h1 className="shrink-0">
-            <img className="h-auto w-30 object-contain" src={Logo} alt="logo" />
+            <a href="https://my.ozcodingschool.site">
+              <img
+                className="h-auto w-30 object-contain"
+                src={Logo}
+                alt="logo"
+              />
+            </a>
           </h1>
 
           <nav aria-label="주요 메뉴">
