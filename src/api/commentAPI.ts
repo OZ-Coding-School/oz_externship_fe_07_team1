@@ -25,3 +25,15 @@ export async function deleteCommentAPI(postId: number, commentId: number) {
   )
   return response.data
 }
+
+export async function updateCommentAPI(
+  postId: number,
+  commentId: number,
+  content: string
+) {
+  const response = await apiInstance.put(
+    `/posts/${postId}/comments/${commentId}`,
+    { content }
+  )
+  return response.data
+}

@@ -9,6 +9,7 @@ import {
   useComments,
   useCreateComment,
   useDeleteComment,
+  useUpdateComment,
 } from '../hooks/queries/useCommentQueries'
 
 export const CommentSection = () => {
@@ -22,6 +23,7 @@ export const CommentSection = () => {
   const { data, isLoading } = useComments(postId)
   const { mutate: createComment } = useCreateComment(postId)
   const { mutate: deleteComment } = useDeleteComment(postId)
+  const { mutate: updateComment } = useUpdateComment(postId)
 
   // 데이터가 아직 안 왔으면 로딩 표시
   if (isLoading) {
@@ -70,7 +72,7 @@ export const CommentSection = () => {
         <CommentSort sortOrder={sortOrder} onChange={setSortOrder} />
       </div>
 
-      {/* 3. 댓글 리스트 */}
+      {/* 댓글 리스트 */}
       <div className="flex flex-col">
         {sortedComments.map((comment) => (
           <CommentItem
@@ -82,6 +84,9 @@ export const CommentSection = () => {
             onDelete={() => {
               setDeleteTargetId(comment.id)
               setIsModalOpen(true)
+            }}
+            onEdit={(newContent) => {
+              updateComment({ commentId: comment.id, content: newContent })
             }}
           />
         ))}
