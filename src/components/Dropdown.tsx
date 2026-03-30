@@ -23,12 +23,12 @@ export default function Dropdown({
   }, [selectedProp, placeholder])
 
   return (
-    <div className="relative inline-block">
+    <div className="relative w-full">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'border-gray-disabled flex h-10 items-center justify-between rounded border bg-gray-100 px-4 text-sm transition-all outline-none',
+          'border-gray-disabled flex h-10 w-full items-center justify-between rounded border bg-gray-100 px-4 text-sm transition-all outline-none',
           isOpen ? 'text-text-main font-medium' : 'text-text-disabled'
         )}
       >
@@ -42,7 +42,7 @@ export default function Dropdown({
       </button>
 
       {isOpen && (
-        <div className="shadow-box bg-surface-default absolute top-11 right-0 z-50 -mr-10 flex min-w-[140px] flex-col rounded border border-gray-500 py-1">
+        <div className="shadow-box bg-surface-default absolute top-11 left-0 z-50 flex w-full flex-col rounded border border-gray-500 py-1">
           <ul className="scrollbar scrollbar-w-2 scrollbar-thumb-gray-disabled scrollbar-track-transparent scrollbar-thumb-rounded-sm flex max-h-60 flex-col gap-2 overflow-y-auto p-1">
             {options.map((option) => (
               <li
