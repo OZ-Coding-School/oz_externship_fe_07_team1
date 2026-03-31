@@ -1,6 +1,8 @@
 import { useLogout } from '../../hooks/queries/useAuthQueries'
 import { cn } from '../../lib/utils'
 import type { GetUserInfoResponse } from '../../types/api-response-types/user'
+import { useAccessTokenStore } from '../../store/useAccessTokenStore'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface UserMenuProps {
   userInfo: GetUserInfoResponse | null
@@ -12,11 +14,18 @@ const USER_MENU_BTN_STYLE =
 
 function UserMenu({ userInfo, className }: UserMenuProps) {
   const { mutate: logout } = useLogout()
+  const clearAccessToken = useAccessTokenStore(
+    (state) => state.clearAccessToken
+  )
+  const queryClient = useQueryClient()
 
   const handleLogoutBtnClicked = () => {
     logout(undefined, {
       onSuccess: () => {
-        window.location.href = 'https://my.ozcodingschool.site'
+        clearAccessToken()
+        localStorage.clear()
+        queryClient.clear()
+        window.location.replace('https://my.ozcodingschool.site')
       },
     })
   }

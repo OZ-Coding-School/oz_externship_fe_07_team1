@@ -13,10 +13,21 @@ export const useAccessTokenStore = create<AccessTokenState>()(
       // 액세스 토큰 값
       accessToken: null,
 
-      setAccessToken: (newToken) => set({ accessToken: newToken }),
+      setAccessToken: (newToken) =>
+        set({
+          accessToken: newToken,
+        }),
 
-      clearAccessToken: () => set({ accessToken: '' }),
+      clearAccessToken: () =>
+        set({
+          accessToken: null,
+        }),
     }),
-    { name: 'tokenStorage' }
+    {
+      name: 'tokenStorage',
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+      }),
+    }
   )
 )

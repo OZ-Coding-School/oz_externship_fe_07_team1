@@ -9,6 +9,7 @@ import { usePosts, usePostCategories } from '../hooks/queries/usePostQueries'
 import CategoryFilterBar from '../components/CategoryFilterBar'
 import { cn } from '../lib/utils'
 import type { PostListType } from '../types'
+import { useAccessTokenStore } from '../store/useAccessTokenStore'
 
 const SORT_LIST = [
   { label: '조회순', value: 'most_views' },
@@ -28,6 +29,13 @@ export interface PostListParams {
 
 function PostList() {
   const navigate = useNavigate()
+
+  const accessToken = useAccessTokenStore((state) => state.accessToken)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   const [page, setPage] = useState(1)
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined)
@@ -129,7 +137,18 @@ function PostList() {
           </div>
 
           <Button
-            onClick={() => navigate('/posts/create')}
+            onClick={() => {
+              if (!isHydrated) return
+              if (
+                !accessToken ||
+                accessToken === 'null' ||
+                accessToken === ''
+              ) {
+                window.location.href = 'https://my.ozcodingschool.site/login'
+                return
+              }
+              navigate('/posts/create')
+            }}
             className="flex h-12 w-30 items-center justify-center gap-2 whitespace-nowrap"
           >
             <Pencil className="size-4" />

@@ -9,30 +9,38 @@ import { useEffect } from 'react'
 import { useAccessTokenStore } from './store/useAccessTokenStore'
 import { useUserInfo } from './hooks/queries/useUserQueries'
 import { useUserInfoStore } from './store/useUserInfoStore'
-import { getRefreshTokenAPI } from './api/authAPI'
+import type { ReactNode } from 'react'
+
+function PrivateRoute({ children }: { children: ReactNode }) {
+  const accessToken = useAccessTokenStore((state) => state.accessToken)
+
+  const isValidToken =
+    typeof accessToken === 'string' &&
+    accessToken !== 'null' &&
+    accessToken !== 'undefined' &&
+    accessToken.trim() !== ''
+
+  if (!isValidToken) {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
 
 function App() {
-  const { accessToken, setAccessToken } = useAccessTokenStore()
+  const { accessToken } = useAccessTokenStore()
   const { setUserInfo } = useUserInfoStore()
+
+  const isValidToken =
+    typeof accessToken === 'string' &&
+    accessToken !== 'null' &&
+    accessToken !== 'undefined' &&
+    accessToken.trim() !== ''
+
   const { data: newUserInfo, isSuccess } = useUserInfo({
-    enabled: !!accessToken,
+    enabled: isValidToken,
   })
 
-  // 커뮤니티 사이트 진입 시 최초 1번 액세스 토큰 발급
-  useEffect(() => {
-    const getAccessToken = async () => {
-      try {
-        const { access_token: newAccessToken } = await getRefreshTokenAPI()
-        setAccessToken(newAccessToken)
-      } catch {
-        return
-      }
-    }
-
-    getAccessToken()
-  }, [])
-
-  // 액세스 토큰 보유 시 내 정보 조회
   useEffect(() => {
     if (isSuccess) {
       setUserInfo(newUserInfo)
@@ -44,20 +52,29 @@ function App() {
       <Route element={<RootLayout />}>
         <Route path="/" element={<Navigate to="/posts" replace />} />
 
-        {/* 목록 페이지 */}
         <Route path="/posts" element={<PostList />} />
 
-        {/* 상세 페이지 */}
         <Route path="/posts/:id" element={<CommunityDetailPage />} />
 
-        {/* 게시글 작성 페이지 */}
-        <Route path="/posts/create" element={<PostCreate />} />
+        <Route
+          path="/posts/create"
+          element={
+            <PrivateRoute>
+              <PostCreate />
+            </PrivateRoute>
+          }
+        />
 
-        {/* 게시글 수정 페이지 */}
-        <Route path="/posts/:id/edit" element={<PostEdit />} />
+        <Route
+          path="/posts/:id/edit"
+          element={
+            <PrivateRoute>
+              <PostEdit />
+            </PrivateRoute>
+          }
+        />
       </Route>
 
-      {/* UI 테스트 페이지 */}
       <Route path="/test" element={<Test />} />
     </Routes>
   )
