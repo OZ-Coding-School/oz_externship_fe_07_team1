@@ -10,6 +10,7 @@ import CategoryFilterBar from '../components/CategoryFilterBar'
 import { cn } from '../lib/utils'
 import type { PostListType } from '../types'
 import { useAccessTokenStore } from '../store/useAccessTokenStore'
+import { useToastStore } from '../store/useToastStore'
 
 const SORT_LIST = [
   { label: '조회순', value: 'most_views' },
@@ -31,6 +32,7 @@ function PostList() {
   const navigate = useNavigate()
 
   const accessToken = useAccessTokenStore((state) => state.accessToken)
+  const { showToast } = useToastStore()
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
@@ -144,7 +146,14 @@ function PostList() {
                 accessToken === 'null' ||
                 accessToken === ''
               ) {
-                window.location.href = 'https://my.ozcodingschool.site/login'
+                showToast(
+                  'default',
+                  '로그인 필요',
+                  '로그인 한 사용자만 글 작성이 가능합니다'
+                )
+                setTimeout(() => {
+                  window.location.href = 'https://my.ozcodingschool.site/login'
+                }, 1000)
                 return
               }
               navigate('/posts/create')
