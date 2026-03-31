@@ -29,7 +29,7 @@ export interface PostListResponse {
   count: number
   next: string | null
   previous: string | null
-  result: PostListType[]
+  results: PostListType[]
 }
 
 export type PostListType = {
@@ -48,4 +48,36 @@ export type PostListType = {
   created_at: string
   updated_at: string
   category_name: string
+}
+
+export type PostListParamSortValueType =
+  | 'latest'
+  | 'oldest'
+  | 'most_views'
+  | 'most_likes'
+  | 'most_comments'
+
+export type PostListParamSearchFilterValueType =
+  | 'author'
+  | 'content'
+  | 'title'
+  | 'title_or_content'
+
+export type PostListParamSortType = {
+  label: string
+  value: PostListParamSortValueType
+}
+
+export type PostListParamSearchFilterType = {
+  label: string
+  value: PostListParamSearchFilterValueType
+}
+
+export interface PostListParams {
+  categoryId?: number
+  page: number
+  pageSize?: number
+  search?: string
+  searchFilter?: PostListParamSearchFilterValueType
+  sort: PostListParamSortValueType
 }
