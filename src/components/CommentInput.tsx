@@ -2,15 +2,34 @@ import { useState, useRef, useEffect } from 'react'
 import { CommentButton } from './CommentButton'
 import { cn } from '../lib/utils'
 import { useSearchUser } from '../hooks/queries/useCommentQueries'
+import { useAccessTokenStore } from '../store/useAccessTokenStore'
+import { useToastStore } from '../store/useToastStore'
 
 interface CommentInputProps {
   onSubmit?: (content: string) => void
+  onClick?: () => void
 }
 
-export const CommentInput = ({ onSubmit }: CommentInputProps) => {
+export const CommentInput = ({ onSubmit, onClick }: CommentInputProps) => {
   const [content, setContent] = useState('')
 
-  // 태그 드롭다운 및 검색어 상태
+  const accessToken = useAccessTokenStore((state) => state.accessToken)
+  const { showToast } = useToastStore()
+
+  const isValidToken =
+    typeof accessToken === 'string' &&
+    accessToken !== 'null' &&
+    accessToken !== 'undefined' &&
+    accessToken.trim() !== ''
+
+  const handleBlocked = () => {
+    showToast(
+      'default',
+      '로그인 필요',
+      '로그인 한 사용자만 댓글 작성이 가능합니다'
+    )
+  }
+
   const [showMentionList, setShowMentionList] = useState(false)
   const [mentionFilter, setMentionFilter] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -24,7 +43,6 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
     }
   }, [content])
 
-  // @ 감지 로직이 포함된 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     setContent(value)
@@ -42,7 +60,6 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
     }
   }
 
-  // 리스트에서 유저 선택 시 호출될 함수
   const handleUserSelect = (nickname: string) => {
     if (!textareaRef.current) return
 
@@ -51,7 +68,7 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
     const textAfterCursor = content.slice(cursorPosition)
 
     const words = textBeforeCursor.split(/\s/)
-    words.pop() // @검색어 부분 제거
+    words.pop()
 
     const newText =
       (words.length > 0
@@ -63,11 +80,17 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
   }
 
   const handleSubmit = () => {
-    if (!content.trim()) return // 입력값이 없거나 공백인 경우 무시
+    if (!isValidToken) {
+      handleBlocked()
+      return
+    }
+
+    if (!content.trim()) return
     onSubmit?.(content)
-    setContent('') // 등록 후 입력 필드 비우기
+    setContent('')
     setShowMentionList(false)
   }
+
   return (
     <div className="relative w-full">
       {showMentionList && (
@@ -79,7 +102,6 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
               '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400'
             )}
           >
-            {/* 서버에서 받아온 유저 목록 */}
             {searchResults.map((user: any) => (
               <li key={user.id}>
                 <button
@@ -108,7 +130,6 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
               </li>
             ))}
 
-            {/* 검색 결과가 없을 때 방어 로직 */}
             {searchResults.length === 0 && mentionFilter.trim() !== '' && (
               <li className="p-3 text-center text-xs text-gray-400">
                 검색 결과가 없습니다.
@@ -128,7 +149,8 @@ export const CommentInput = ({ onSubmit }: CommentInputProps) => {
           className="text-text-main min-h-20 w-full resize-none bg-transparent text-sm leading-[1.5] outline-none placeholder:text-gray-400"
           placeholder="개인정보를 공유 및 요청하거나, 명예 훼손, 무단 광고, 불법 정보 유포시 모니터링 후 삭제될 수 있습니다."
           value={content}
-          onChange={handleChange} // 핸들러 변경
+          onChange={handleChange}
+          onClick={onClick}
         />
 
         <div className="flex items-end">
