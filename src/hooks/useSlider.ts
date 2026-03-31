@@ -10,10 +10,14 @@ export function useSlider() {
   useEffect(() => {
     if (!sliderRef.current || !trackRef.current) return
 
-    const observer = new ResizeObserver(() => {
+    const updateSize = () => {
       setSliderWidth(sliderRef.current?.offsetWidth ?? 0)
       setTrackWidth(trackRef.current?.scrollWidth ?? 0)
-    })
+    }
+
+    updateSize()
+
+    const observer = new ResizeObserver(updateSize)
 
     observer.observe(sliderRef.current)
     observer.observe(trackRef.current)
@@ -22,7 +26,7 @@ export function useSlider() {
   }, [])
 
   const minTranslateX = currentPage * sliderWidth
-  const maxTranslateX = Math.max(trackWidth - sliderWidth)
+  const maxTranslateX = Math.max(trackWidth - sliderWidth, 0)
   const translateX = Math.min(minTranslateX, maxTranslateX)
 
   const canSlideLeft = currentPage > 0

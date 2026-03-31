@@ -34,18 +34,20 @@ export default function EditorHeader({
         <div className="flex w-full flex-col gap-5">
           {/* 카테고리 */}
           <div className="flex h-10 w-full items-center">
-            <Dropdown
-              placeholder="카테고리 선택"
-              options={categories.map((c) => c.name)}
-              selected={
-                categories.find((c) => c.id === selectedCategoryId)?.name
-              }
-              onSelect={(value) => {
-                const index = categories.findIndex((c) => c.name === value)
-                if (index === -1) return
-                onChangeCategoryId(categories[index].id)
-              }}
-            />
+            <div className="w-full">
+              <Dropdown
+                placeholder="카테고리 선택"
+                options={categories.map((c) => c.name)}
+                selected={
+                  categories.find((c) => c.id === selectedCategoryId)?.name
+                }
+                onSelect={(value) => {
+                  const index = categories.findIndex((c) => c.name === value)
+                  if (index === -1) return
+                  onChangeCategoryId(categories[index].id)
+                }}
+              />
+            </div>
           </div>
 
           {/* 제목 입력 */}

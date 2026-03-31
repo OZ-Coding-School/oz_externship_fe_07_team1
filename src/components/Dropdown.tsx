@@ -23,7 +23,7 @@ export default function Dropdown({
   }, [selectedProp, placeholder])
 
   return (
-    <div className="relative flex w-full flex-col gap-0">
+    <div className="relative w-full">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -42,7 +42,7 @@ export default function Dropdown({
       </button>
 
       {isOpen && (
-        <div className="shadow-box bg-surface-default absolute top-11 z-50 flex w-full flex-col rounded border border-gray-500 py-1">
+        <div className="shadow-box bg-surface-default absolute top-11 left-0 z-50 flex w-full flex-col rounded border border-gray-500 py-1">
           <ul className="scrollbar scrollbar-w-2 scrollbar-thumb-gray-disabled scrollbar-track-transparent scrollbar-thumb-rounded-sm flex max-h-60 flex-col gap-2 overflow-y-auto p-1">
             {options.map((option) => (
               <li
@@ -53,7 +53,7 @@ export default function Dropdown({
                   setIsOpen(false)
                 }}
                 className={cn(
-                  'hover:bg-primary-100 flex h-12 w-full shrink-0 cursor-pointer items-center justify-between rounded-sm px-4 py-2 text-sm transition-colors',
+                  'hover:bg-primary-100 flex h-12 w-full shrink-0 cursor-pointer items-center justify-center rounded-sm px-2 py-2 text-center text-sm transition-colors',
                   selected === option
                     ? 'text-primary-default font-semibold'
                     : 'text-text-main'

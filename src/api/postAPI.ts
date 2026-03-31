@@ -26,10 +26,8 @@ async function getPostsAPI(params: {
 
 // 카테고리 목록 조회
 async function getPostCategoriesAPI() {
-  const response = await apiInstance.get<{ categories: PostCategory[] }>(
-    '/posts/categories'
-  )
-  return response.data?.categories || []
+  const response = await apiInstance.get<PostCategory[]>('/posts/categories')
+  return response.data || []
 }
 
 // 게시글 생성
