@@ -9,14 +9,30 @@ import { useEffect } from 'react'
 import { useAccessTokenStore } from './store/useAccessTokenStore'
 import { useUserInfo } from './hooks/queries/useUserQueries'
 import { useUserInfoStore } from './store/useUserInfoStore'
+import { getRefreshTokenAPI } from './api/authAPI'
 
 function App() {
-  const { accessToken } = useAccessTokenStore()
+  const { accessToken, setAccessToken } = useAccessTokenStore()
   const { setUserInfo } = useUserInfoStore()
   const { data: newUserInfo, isSuccess } = useUserInfo({
     enabled: !!accessToken,
   })
 
+  // 커뮤니티 사이트 진입 시 최초 1번 액세스 토큰 발급
+  useEffect(() => {
+    const getAccessToken = async () => {
+      try {
+        const { access_token: newAccessToken } = await getRefreshTokenAPI()
+        setAccessToken(newAccessToken)
+      } catch {
+        return
+      }
+    }
+
+    getAccessToken()
+  }, [])
+
+  // 액세스 토큰 보유 시 내 정보 조회
   useEffect(() => {
     if (isSuccess) {
       setUserInfo(newUserInfo)
