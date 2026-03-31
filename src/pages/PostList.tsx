@@ -8,6 +8,23 @@ import { Button } from '../components/Button'
 import { usePosts, usePostCategories } from '../hooks/queries/usePostQueries'
 import CategoryFilterBar from '../components/CategoryFilterBar'
 import { cn } from '../lib/utils'
+import type { PostListType } from '../types'
+
+const SORT_LIST = [
+  { label: '조회순', value: 'most_views' },
+  { label: '좋아요 순', value: 'most_likes' },
+  { label: '댓글 순', value: 'most_comments' },
+  { label: '최신순', value: 'latest' },
+  { label: '오래된 순', value: 'oldest' },
+]
+
+export interface PostListParams {
+  categoryId?: number
+  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
+  search?: string
+  page?: number
+  pageSize?: number
+}
 
 function PostList() {
   const navigate = useNavigate()
@@ -24,16 +41,9 @@ function PostList() {
   const searchOptions = ['제목', '내용', '작성자']
 
   const [isSortOpen, setIsSortOpen] = useState(false)
-  const sortList = [
-    { label: '조회순', value: 'most_views' },
-    { label: '좋아요 순', value: 'most_likes' },
-    { label: '댓글 순', value: 'most_comments' },
-    { label: '최신순', value: 'latest' },
-    { label: '오래된 순', value: 'oldest' },
-  ]
 
   const currentSortLabel =
-    sortList.find((item) => item.value === sort)?.label || '최신순'
+    SORT_LIST.find((item) => item.value === sort)?.label || '최신순'
 
   const { data: categoryData } = usePostCategories()
   const categories = categoryData
@@ -150,8 +160,8 @@ function PostList() {
             </button>
 
             {isSortOpen && (
-              <div className="absolute top-10 left-1/2 z-50 flex w-40 -translate-x-[60%] flex-col items-center rounded-[24px] border border-gray-100 bg-white p-2 shadow-xl outline-none">
-                {sortList.map((item) => (
+              <div className="absolute top-10 right-0 z-50 flex w-40 flex-col rounded-[24px] border border-gray-100 bg-white p-2 shadow-xl outline-none">
+                {SORT_LIST.map((item) => (
                   <button
                     key={item.value}
                     onClick={() => {
@@ -180,7 +190,7 @@ function PostList() {
                 로딩 중...
               </div>
             ) : posts.length > 0 ? (
-              posts.map((post: any) => (
+              posts.map((post: PostListType) => (
                 <PostCard
                   key={post.id}
                   post={post}

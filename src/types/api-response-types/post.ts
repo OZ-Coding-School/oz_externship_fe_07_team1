@@ -24,3 +24,28 @@ export interface PostDetailResponse {
   created_at: string
   updated_at: string
 }
+
+export interface PostListResponse {
+  count: number
+  next: string | null
+  previous: string | null
+  result: PostListType[]
+}
+
+export type PostListType = {
+  id: number
+  author: {
+    id: number
+    nickname: string
+    profile_img_url: string
+  }
+  title: string
+  thumbnail_img_url: string
+  content_preview: string
+  comment_count: number
+  view_count: number
+  like_count: number
+  created_at: string
+  updated_at: string
+  category_name: string
+}

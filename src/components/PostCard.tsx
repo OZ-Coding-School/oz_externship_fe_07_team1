@@ -1,4 +1,5 @@
 import { ThumbsUp, MessageCircle, Eye, User } from 'lucide-react'
+import type { PostListType } from '../types'
 
 export interface PostCardProps {
   id: string
@@ -18,7 +19,7 @@ export interface PostCardProps {
 }
 
 interface Props {
-  post: PostCardProps
+  post: PostListType
   onClick: () => void
 }
 
@@ -45,7 +46,7 @@ function PostCard({ post, onClick }: Props) {
     >
       <div className="flex w-full flex-col justify-between">
         <div className="flex flex-col gap-3">
-          <span className="text-12 text-text-sub">카테고리</span>
+          <span className="text-12 text-text-sub">{post.category_name}</span>
 
           <h3 className="text-16 text-text-main line-clamp-1 font-semibold">
             {post.title}
