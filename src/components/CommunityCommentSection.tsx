@@ -80,10 +80,10 @@ export const CommentSection = () => {
         {sortedComments.map((comment) => (
           <CommentItem
             key={comment.id}
-            authorName={comment.nickname}
+            authorName={comment.author.nickname}
             date={new Date(comment.created_at).toLocaleDateString()}
             content={comment.content}
-            isMyComment={userInfo?.id === comment.author}
+            isMyComment={userInfo?.id === comment.author.id}
             onDelete={() => {
               setDeleteTargetId(comment.id)
               setIsModalOpen(true)

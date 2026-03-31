@@ -8,8 +8,11 @@ export const mockCommentsData: GetCommentsResponse = {
     {
       id: 1,
       post: 1,
-      author: 1,
-      nickname: 'jnubugo',
+      author: {
+        id: 1,
+        nickname: 'jnubugo',
+        profile_img_url: null,
+      },
       content: '좋아요',
       created_at: '2025-06-13T10:00:00+09:00',
       updated_at: '2025-06-13T10:00:00+09:00',
@@ -17,8 +20,11 @@ export const mockCommentsData: GetCommentsResponse = {
     {
       id: 2,
       post: 1,
-      author: 2,
-      nickname: 'name2',
+      author: {
+        id: 2,
+        nickname: 'name2',
+        profile_img_url: null,
+      },
       content: '굿굿',
       created_at: '2025-06-13T11:00:00+09:00',
       updated_at: '2025-06-13T11:00:00+09:00',
