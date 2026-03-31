@@ -5,6 +5,7 @@ import { CommentInput } from '../components/CommentInput'
 import { CommentItem } from '../components/CommunityCommentItem'
 import { Modal } from '../components/Modal'
 import { MessageCircle } from 'lucide-react'
+import { useUserInfoStore } from '../store/useUserInfoStore'
 import {
   useComments,
   useCreateComment,
@@ -19,7 +20,9 @@ export const CommentSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
-  // MSW 서버에서 진짜 데이터 땡겨오기
+  const { userInfo } = useUserInfoStore()
+
+  // MSW 서버에서 데이터 땡겨오기
   const { data, isLoading } = useComments(postId)
   const { mutate: createComment } = useCreateComment(postId)
   const { mutate: deleteComment } = useDeleteComment(postId)
@@ -80,7 +83,7 @@ export const CommentSection = () => {
             authorName={comment.nickname}
             date={new Date(comment.created_at).toLocaleDateString()}
             content={comment.content}
-            isMyComment
+            isMyComment={userInfo?.id === comment.author}
             onDelete={() => {
               setDeleteTargetId(comment.id)
               setIsModalOpen(true)
