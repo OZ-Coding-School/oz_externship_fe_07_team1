@@ -9,36 +9,16 @@ import { useEffect } from 'react'
 import { useAccessTokenStore } from './store/useAccessTokenStore'
 import { useUserInfo } from './hooks/queries/useUserQueries'
 import { useUserInfoStore } from './store/useUserInfoStore'
-import type { ReactNode } from 'react'
-
-function PrivateRoute({ children }: { children: ReactNode }) {
-  const accessToken = useAccessTokenStore((state) => state.accessToken)
-
-  const isValidToken =
-    typeof accessToken === 'string' &&
-    accessToken !== 'null' &&
-    accessToken !== 'undefined' &&
-    accessToken.trim() !== ''
-
-  if (!isValidToken) {
-    return <Navigate to="/" replace />
-  }
-
-  return <>{children}</>
-}
+import PrivateRoute from './components/common/PrivateRoute'
 
 function App() {
-  const { accessToken } = useAccessTokenStore()
+  const { isValidToken } = useAccessTokenStore()
   const { setUserInfo } = useUserInfoStore()
 
-  const isValidToken =
-    typeof accessToken === 'string' &&
-    accessToken !== 'null' &&
-    accessToken !== 'undefined' &&
-    accessToken.trim() !== ''
+  const valid = isValidToken()
 
   const { data: newUserInfo, isSuccess } = useUserInfo({
-    enabled: isValidToken,
+    enabled: valid,
   })
 
   useEffect(() => {

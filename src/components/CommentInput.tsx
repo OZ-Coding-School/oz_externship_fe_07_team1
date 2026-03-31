@@ -1,163 +1,38 @@
-import { useState, useRef, useEffect } from 'react'
-import { CommentButton } from './CommentButton'
-import { cn } from '../lib/utils'
-import { useSearchUser } from '../hooks/queries/useCommentQueries'
+import { useState } from 'react'
 import { useAccessTokenStore } from '../store/useAccessTokenStore'
-import { useToastStore } from '../store/useToastStore'
 
 interface CommentInputProps {
-  onSubmit?: (content: string) => void
+  onSubmit: (content: string) => void
   onClick?: () => void
 }
 
 export const CommentInput = ({ onSubmit, onClick }: CommentInputProps) => {
   const [content, setContent] = useState('')
-
-  const accessToken = useAccessTokenStore((state) => state.accessToken)
-  const { showToast } = useToastStore()
-
-  const isValidToken =
-    typeof accessToken === 'string' &&
-    accessToken !== 'null' &&
-    accessToken !== 'undefined' &&
-    accessToken.trim() !== ''
-
-  const handleBlocked = () => {
-    showToast(
-      'default',
-      '로그인 필요',
-      '로그인 한 사용자만 댓글 작성이 가능합니다'
-    )
-  }
-
-  const [showMentionList, setShowMentionList] = useState(false)
-  const [mentionFilter, setMentionFilter] = useState('')
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { data: searchResults = [] } = useSearchUser(mentionFilter)
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto'
-      const nextHeight = Math.max(80, textareaRef.current.scrollHeight)
-      textareaRef.current.style.height = `${nextHeight}px`
-    }
-  }, [content])
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    setContent(value)
-
-    const cursorPosition = e.target.selectionStart
-    const textBeforeCursor = value.slice(0, cursorPosition)
-    const words = textBeforeCursor.split(/\s/)
-    const lastWord = words[words.length - 1]
-
-    if (lastWord.startsWith('@')) {
-      setMentionFilter(lastWord.slice(1))
-      setShowMentionList(true)
-    } else {
-      setShowMentionList(false)
-    }
-  }
-
-  const handleUserSelect = (nickname: string) => {
-    if (!textareaRef.current) return
-
-    const cursorPosition = textareaRef.current.selectionStart
-    const textBeforeCursor = content.slice(0, cursorPosition)
-    const textAfterCursor = content.slice(cursorPosition)
-
-    const words = textBeforeCursor.split(/\s/)
-    words.pop()
-
-    const newText =
-      (words.length > 0
-        ? [...words, `@${nickname} `].join(' ')
-        : `@${nickname} `) + textAfterCursor
-    setContent(newText)
-    setShowMentionList(false)
-    textareaRef.current.focus()
-  }
+  const { isValidToken } = useAccessTokenStore()
 
   const handleSubmit = () => {
-    if (!isValidToken) {
-      handleBlocked()
-      return
-    }
-
+    if (!isValidToken()) return
     if (!content.trim()) return
-    onSubmit?.(content)
+    onSubmit(content)
     setContent('')
-    setShowMentionList(false)
   }
 
   return (
-    <div className="relative w-full">
-      {showMentionList && (
-        <div className="absolute bottom-full left-0 z-50 mb-2 w-[280px] rounded-xl bg-white p-3 shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]">
-          <ul
-            className={cn(
-              'flex max-h-28 flex-col gap-2.5 overflow-y-auto pr-1',
-              '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent',
-              '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400'
-            )}
-          >
-            {searchResults.map((user: any) => (
-              <li key={user.id}>
-                <button
-                  type="button"
-                  onClick={() => handleUserSelect(user.nickname)}
-                  className={cn(
-                    'flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm',
-                    'transition-colors hover:bg-gray-200'
-                  )}
-                >
-                  <div className="h-6 w-6 shrink-0 overflow-hidden rounded-full bg-gray-100">
-                    {user.profile_img_url ? (
-                      <img
-                        src={user.profile_img_url}
-                        alt={user.nickname}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-gray-200"></div>
-                    )}
-                  </div>
-                  <span className="font-medium text-gray-900">
-                    {user.nickname}
-                  </span>
-                </button>
-              </li>
-            ))}
-
-            {searchResults.length === 0 && mentionFilter.trim() !== '' && (
-              <li className="p-3 text-center text-xs text-gray-400">
-                검색 결과가 없습니다.
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-      <div
-        className={cn(
-          'flex w-full gap-4 rounded-xl p-4',
-          'bg-surface-default focus-within:border-primary-default border-gray-250 border transition-all'
-        )}
-      >
-        <textarea
-          ref={textareaRef}
-          className="text-text-main min-h-20 w-full resize-none bg-transparent text-sm leading-[1.5] outline-none placeholder:text-gray-400"
-          placeholder="개인정보를 공유 및 요청하거나, 명예 훼손, 무단 광고, 불법 정보 유포시 모니터링 후 삭제될 수 있습니다."
-          value={content}
-          onChange={handleChange}
-          onClick={onClick}
-        />
-
-        <div className="flex items-end">
-          <CommentButton disabled={!content.trim()} onClick={handleSubmit}>
-            등록
-          </CommentButton>
-        </div>
+    <div className="flex flex-col gap-2">
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        onClick={onClick}
+        placeholder="댓글을 입력해주세요."
+        className="focus:border-primary-default w-full resize-none rounded-lg border border-gray-200 p-3 text-sm outline-none"
+      />
+      <div className="flex justify-end">
+        <button
+          onClick={handleSubmit}
+          className="bg-primary-default rounded-md px-4 py-2 text-sm text-white"
+        >
+          등록
+        </button>
       </div>
     </div>
   )

@@ -14,9 +14,7 @@ const USER_MENU_BTN_STYLE =
 
 function UserMenu({ userInfo, className }: UserMenuProps) {
   const { mutate: logout } = useLogout()
-  const clearAccessToken = useAccessTokenStore(
-    (state) => state.clearAccessToken
-  )
+  const { clearAccessToken } = useAccessTokenStore()
   const queryClient = useQueryClient()
 
   const handleLogoutBtnClicked = () => {

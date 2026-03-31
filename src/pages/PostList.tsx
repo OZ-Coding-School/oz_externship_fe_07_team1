@@ -1,248 +1,64 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router'
-import { ChevronDown, Pencil } from 'lucide-react'
-import PostCard from '../components/PostCard'
-import Pagination from '../components/Pagination'
-import { SearchBar } from '../components/SearchBar'
-import { Button } from '../components/Button'
-import { usePosts, usePostCategories } from '../hooks/queries/usePostQueries'
-import CategoryFilterBar from '../components/CategoryFilterBar'
-import { cn } from '../lib/utils'
-import type { PostListType } from '../types'
+// /Users/admin/Desktop/oz-intership-project/src/App.tsx
+import { Routes, Route, Navigate } from 'react-router'
+import Test from '../pages/Test'
+import RootLayout from '../components/layout/RootLayout'
+import PostList from '../pages/PostList'
+import PostCreate from '../pages/PostCreate'
+import PostEdit from '../pages/PostEdit'
+import CommunityDetailPage from '../pages/CommunityDetailPage'
+import { useEffect } from 'react'
 import { useAccessTokenStore } from '../store/useAccessTokenStore'
-import { useToastStore } from '../store/useToastStore'
+import { useUserInfo } from '../hooks/queries/useUserQueries'
+import { useUserInfoStore } from '../store/useUserInfoStore'
+import PrivateRoute from '../components/common/PrivateRoute'
 
-const SORT_LIST = [
-  { label: '조회순', value: 'most_views' },
-  { label: '좋아요 순', value: 'most_likes' },
-  { label: '댓글 순', value: 'most_comments' },
-  { label: '최신순', value: 'latest' },
-  { label: '오래된 순', value: 'oldest' },
-]
+function App() {
+  const { isValidToken } = useAccessTokenStore()
+  const { setUserInfo } = useUserInfoStore()
 
-export interface PostListParams {
-  categoryId?: number
-  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
-  search?: string
-  page?: number
-  pageSize?: number
-}
+  const valid = isValidToken()
 
-function PostList() {
-  const navigate = useNavigate()
-
-  const accessToken = useAccessTokenStore((state) => state.accessToken)
-  const { showToast } = useToastStore()
-  const [isHydrated, setIsHydrated] = useState(false)
-
-  useEffect(() => {
-    setIsHydrated(true)
-  }, [])
-
-  const [page, setPage] = useState(1)
-  const [categoryId, setCategoryId] = useState<number | undefined>(undefined)
-  const [search, setSearch] = useState('')
-  const [sort, setSort] = useState<
-    'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
-  >('latest')
-
-  const [searchType, setSearchType] = useState('제목')
-  const [isSearchTypeOpen, setIsSearchTypeOpen] = useState(false)
-  const searchOptions = ['제목', '내용', '작성자']
-
-  const [isSortOpen, setIsSortOpen] = useState(false)
-
-  const currentSortLabel =
-    SORT_LIST.find((item) => item.value === sort)?.label || '최신순'
-
-  const { data: categoryData } = usePostCategories()
-  const categories = categoryData
-    ? [{ id: 0, name: '전체' }, ...categoryData]
-    : [{ id: 0, name: '전체' }]
-
-  const [currentCategory, setCurrentCategory] = useState({
-    id: 0,
-    name: '전체',
+  const { data: newUserInfo, isSuccess } = useUserInfo({
+    enabled: valid,
   })
 
   useEffect(() => {
-    if (categoryData && categoryData.length > 0) {
-      const selected =
-        categoryData.find((c) => c.id === categoryId) || categories[0]
-      setCurrentCategory(selected)
+    if (isSuccess) {
+      setUserInfo(newUserInfo)
     }
-  }, [categoryData, categoryId])
-
-  const { data, isLoading } = usePosts({
-    page,
-    page_size: 10,
-    search,
-    category_id: categoryId === 0 ? undefined : categoryId,
-    sort,
-  })
-
-  const posts = (data as any)?.results ?? []
-  const totalPages = Math.ceil(((data as any)?.count ?? 0) / 10)
+  }, [isSuccess])
 
   return (
-    <div className="flex w-full justify-center pt-56">
-      <div className="flex w-236 flex-col gap-13">
-        <h1 className="text-text-main text-3xl leading-10 font-bold">
-          커뮤니티
-        </h1>
+    <Routes>
+      <Route element={<RootLayout />}>
+        <Route path="/" element={<Navigate to="/posts" replace />} />
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsSearchTypeOpen(!isSearchTypeOpen)}
-                className="flex h-10 cursor-pointer items-center gap-2 px-2 outline-none"
-              >
-                <span className="text-16 text-text-sub font-medium">
-                  {searchType}
-                </span>
-                <ChevronDown
-                  className={cn(
-                    'text-text-sub size-5 transition-transform',
-                    isSearchTypeOpen && 'rotate-180'
-                  )}
-                />
-              </button>
+        <Route path="/posts" element={<PostList />} />
 
-              {isSearchTypeOpen && (
-                <div className="absolute top-11 left-0 z-50 -ml-12 flex w-36 flex-col rounded-3xl border border-gray-100 bg-white p-2 shadow-xl outline-none">
-                  {searchOptions.map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setSearchType(option)
-                        setIsSearchTypeOpen(false)
-                      }}
-                      className={cn(
-                        'flex h-12 w-full items-center justify-center rounded-2xl px-2 text-center text-base transition-colors hover:bg-gray-50',
-                        searchType === option
-                          ? 'text-primary-default bg-purple-50 font-bold'
-                          : 'text-text-main'
-                      )}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+        <Route path="/posts/:id" element={<CommunityDetailPage />} />
 
-            <div className="w-118">
-              <SearchBar value={search} onValueChange={setSearch} />
-            </div>
-          </div>
+        <Route
+          path="/posts/create"
+          element={
+            <PrivateRoute>
+              <PostCreate />
+            </PrivateRoute>
+          }
+        />
 
-          <Button
-            onClick={() => {
-              if (!isHydrated) return
-              if (
-                !accessToken ||
-                accessToken === 'null' ||
-                accessToken === ''
-              ) {
-                showToast(
-                  'default',
-                  '로그인 필요',
-                  '로그인 한 사용자만 글 작성이 가능합니다'
-                )
-                setTimeout(() => {
-                  window.location.href = 'https://my.ozcodingschool.site/login'
-                }, 1000)
-                return
-              }
-              navigate('/posts/create')
-            }}
-            className="flex h-12 w-30 items-center justify-center gap-2 whitespace-nowrap"
-          >
-            <Pencil className="size-4" />
-            글쓰기
-          </Button>
-        </div>
+        <Route
+          path="/posts/:id/edit"
+          element={
+            <PrivateRoute>
+              <PostEdit />
+            </PrivateRoute>
+          }
+        />
+      </Route>
 
-        <div className="border-gray-250 flex items-center justify-between border-b pb-3">
-          <CategoryFilterBar
-            currentCategory={currentCategory}
-            onCategoryClick={(cat) => {
-              setCurrentCategory(cat)
-              setCategoryId(cat.id === 0 ? undefined : cat.id)
-            }}
-            categoryList={categories}
-          />
-
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-1 px-2 outline-none"
-            >
-              <span className="text-16 text-text-main font-medium">
-                {currentSortLabel}
-              </span>
-              <span className="text-16 text-text-main">↓↑</span>
-            </button>
-
-            {isSortOpen && (
-              <div className="absolute top-10 right-0 z-50 flex w-40 flex-col rounded-[24px] border border-gray-100 bg-white p-2 shadow-xl outline-none">
-                {SORT_LIST.map((item) => (
-                  <button
-                    key={item.value}
-                    onClick={() => {
-                      setSort(item.value as any)
-                      setIsSortOpen(false)
-                    }}
-                    className={cn(
-                      'flex h-12 w-full items-center justify-center rounded-[16px] px-2 text-base transition-colors',
-                      sort === item.value
-                        ? 'text-primary-default bg-purple-50 font-bold'
-                        : 'text-text-main hover:bg-gray-50'
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="border-gray-250 border-b">
-          <div className="flex flex-col">
-            {isLoading ? (
-              <div className="text-14 text-text-light py-12 text-center">
-                로딩 중...
-              </div>
-            ) : posts.length > 0 ? (
-              posts.map((post: PostListType) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onClick={() => navigate(`/posts/${post.id}`)}
-                />
-              ))
-            ) : (
-              <div className="text-14 text-text-light py-12 text-center">
-                게시글이 없습니다.
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-3 mb-52">
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
-        </div>
-      </div>
-    </div>
+      <Route path="/test" element={<Test />} />
+    </Routes>
   )
 }
 
-export default PostList
+export default App

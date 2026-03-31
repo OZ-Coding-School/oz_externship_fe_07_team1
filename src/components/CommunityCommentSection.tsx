@@ -22,14 +22,8 @@ export const CommentSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
-  const accessToken = useAccessTokenStore((state) => state.accessToken)
+  const { isValidToken } = useAccessTokenStore()
   const { showToast } = useToastStore()
-
-  const isValidToken =
-    typeof accessToken === 'string' &&
-    accessToken !== 'null' &&
-    accessToken !== 'undefined' &&
-    accessToken.trim() !== ''
 
   const handleBlocked = () => {
     showToast(
@@ -76,14 +70,14 @@ export const CommentSection = () => {
       <div className="mb-6">
         <CommentInput
           onSubmit={(content) => {
-            if (!isValidToken) {
+            if (!isValidToken()) {
               handleBlocked()
               return
             }
             createComment({ content })
           }}
           onClick={() => {
-            if (!isValidToken) {
+            if (!isValidToken()) {
               handleBlocked()
             }
           }}

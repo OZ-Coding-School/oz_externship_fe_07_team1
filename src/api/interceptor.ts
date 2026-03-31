@@ -21,14 +21,12 @@ instances.forEach((targetInstance) => {
     (response) => response,
     async (error) => {
       const originalRequest = error.config
-      const { setAccessToken, clearAccessToken } =
+      const { accessToken, setAccessToken, clearAccessToken } =
         useAccessTokenStore.getState()
 
       if (error.response?.status !== 401) {
         return Promise.reject(error)
       }
-
-      const { accessToken } = useAccessTokenStore.getState()
 
       if (
         !accessToken ||
