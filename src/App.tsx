@@ -10,9 +10,10 @@ import { useAccessTokenStore } from './store/useAccessTokenStore'
 import { useUserInfo } from './hooks/queries/useUserQueries'
 import { useUserInfoStore } from './store/useUserInfoStore'
 import PrivateRoute from './components/common/PrivateRoute'
+import { getRefreshTokenAPI } from './api/authAPI'
 
 function App() {
-  const { isValidToken } = useAccessTokenStore()
+  const { isValidToken, setAccessToken } = useAccessTokenStore()
   const { setUserInfo } = useUserInfoStore()
 
   const valid = isValidToken()
@@ -20,6 +21,20 @@ function App() {
   const { data: newUserInfo, isSuccess } = useUserInfo({
     enabled: valid,
   })
+
+  // 커뮤니티 사이트 진입 시 최초 1번 액세스 토큰 발급
+  useEffect(() => {
+    const getAccessToken = async () => {
+      try {
+        const { access_token: newAccessToken } = await getRefreshTokenAPI()
+        setAccessToken(newAccessToken)
+      } catch {
+        return
+      }
+    }
+
+    getAccessToken()
+  }, [])
 
   useEffect(() => {
     if (isSuccess) {
