@@ -122,7 +122,7 @@ function useDeletePost() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] })
       showToast('success', '삭제 완료', '게시글이 삭제되었습니다.')
-      navigate('/community')
+      navigate('/posts')
     },
     onError: () => {
       showToast(
