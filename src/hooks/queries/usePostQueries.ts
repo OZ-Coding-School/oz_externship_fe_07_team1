@@ -15,6 +15,8 @@ import type {
   CreatePostRequest,
   CreatePostResponse,
   PostCategory,
+  PostListParams,
+  PostListResponse,
   UpdatePostRequest,
 } from '../../types'
 
@@ -27,16 +29,27 @@ function usePostCategories() {
 }
 
 // 게시글 목록 조회
-function usePosts(params: {
-  page?: number
-  page_size?: number
-  search?: string
-  category_id?: number
-  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
-}) {
-  return useQuery({
+function usePosts(params: PostListParams) {
+  const { searchFilter, ...rest } = params
+
+  return useQuery<PostListResponse>({
     queryKey: ['posts', params],
-    queryFn: () => getPostsAPI(params),
+    queryFn: () => {
+      const newParams: PostListParams = { ...rest }
+
+      if (rest.search) {
+        newParams.searchFilter = searchFilter
+      }
+
+      return getPostsAPI({
+        category_id: newParams.categoryId,
+        page: newParams.page,
+        page_size: newParams.pageSize,
+        search: newParams.search,
+        search_filter: newParams.searchFilter,
+        sort: newParams.sort,
+      })
+    },
   })
 }
 

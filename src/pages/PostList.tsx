@@ -1,7 +1,7 @@
 // src/pages/PostList.tsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { ChevronDown, Pencil } from 'lucide-react'
+import { ChevronDown, Pencil, ArrowUpDown } from 'lucide-react'
 import PostCard from '../components/PostCard'
 import Pagination from '../components/Pagination'
 import { SearchBar } from '../components/SearchBar'
@@ -9,29 +9,16 @@ import { Button } from '../components/Button'
 import { usePosts, usePostCategories } from '../hooks/queries/usePostQueries'
 import CategoryFilterBar from '../components/CategoryFilterBar'
 import { cn } from '../lib/utils'
-import type { PostListType } from '../types'
 import { useAccessTokenStore } from '../store/useAccessTokenStore'
 import { useToastStore } from '../store/useToastStore'
-
-const SORT_LIST = [
-  { label: '조회순', value: 'most_views' },
-  { label: '좋아요 순', value: 'most_likes' },
-  { label: '댓글 순', value: 'most_comments' },
-  { label: '최신순', value: 'latest' },
-  { label: '오래된 순', value: 'oldest' },
-]
-
-export interface PostListParams {
-  categoryId?: number
-  sort?: 'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
-  search?: string
-  page?: number
-  pageSize?: number
-}
+import { SEARCH_FILTER_LIST, SORT_LIST } from '../constants/postList'
+import type {
+  PostListParamSearchFilterValueType,
+  PostListParamSortValueType,
+  PostListType,
+} from '../types'
 
 function PostList() {
-  const navigate = useNavigate()
-
   const { accessToken } = useAccessTokenStore()
   const { showToast } = useToastStore()
 
@@ -41,18 +28,20 @@ function PostList() {
     accessToken !== 'undefined' &&
     accessToken.trim() !== ''
 
-  const [page, setPage] = useState(1)
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined)
+  const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  const [sort, setSort] = useState<
-    'latest' | 'oldest' | 'most_views' | 'most_likes' | 'most_comments'
-  >('latest')
+  const [searchFilter, setSearchFilter] = useState<{
+    label: string
+    value: PostListParamSearchFilterValueType
+  }>(SEARCH_FILTER_LIST[0])
+  const [sort, setSort] = useState<PostListParamSortValueType>('latest')
 
-  const [searchType, setSearchType] = useState('제목')
+  // sort & search filter 모달 토글 관리 상태
   const [isSearchTypeOpen, setIsSearchTypeOpen] = useState(false)
-  const searchOptions = ['제목', '내용', '작성자']
-
   const [isSortOpen, setIsSortOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   const currentSortLabel =
     SORT_LIST.find((item) => item.value === sort)?.label || '최신순'
@@ -76,15 +65,16 @@ function PostList() {
   }, [categoryData, categoryId])
 
   const { data, isLoading } = usePosts({
+    categoryId: categoryId === 0 ? undefined : categoryId,
     page,
-    page_size: 10,
+    pageSize: 10,
     search,
-    category_id: categoryId === 0 ? undefined : categoryId,
+    searchFilter: searchFilter.value,
     sort,
   })
 
-  const posts = (data as any)?.results ?? []
-  const totalPages = Math.ceil(((data as any)?.count ?? 0) / 10)
+  const posts = data?.results ?? []
+  const totalPages = Math.ceil((data?.count ?? 0) / 10)
 
   return (
     <div className="flex w-full justify-center pt-56">
@@ -102,7 +92,7 @@ function PostList() {
                 className="flex h-10 cursor-pointer items-center gap-2 px-2 outline-none"
               >
                 <span className="text-16 text-text-sub font-medium">
-                  {searchType}
+                  {searchFilter.label}
                 </span>
                 <ChevronDown
                   className={cn(
@@ -114,21 +104,21 @@ function PostList() {
 
               {isSearchTypeOpen && (
                 <div className="absolute top-11 left-0 z-50 ml-12 flex w-36 flex-col rounded-3xl border border-gray-100 bg-white p-2 shadow-xl outline-none">
-                  {searchOptions.map((option) => (
+                  {SEARCH_FILTER_LIST.map((option) => (
                     <button
-                      key={option}
+                      key={option.value}
                       onClick={() => {
-                        setSearchType(option)
+                        setSearchFilter(option)
                         setIsSearchTypeOpen(false)
                       }}
                       className={cn(
                         'flex h-12 w-full items-center justify-center rounded-2xl px-2 text-center text-base transition-colors hover:bg-gray-50',
-                        searchType === option
+                        searchFilter === option
                           ? 'text-primary-default bg-purple-50 font-bold'
                           : 'text-text-main'
                       )}
                     >
-                      {option}
+                      {option.label}
                     </button>
                   ))}
                 </div>
@@ -150,7 +140,7 @@ function PostList() {
             }}
             className="flex h-12 w-30 items-center justify-center gap-2 whitespace-nowrap"
           >
-            <Pencil className="size-4" />
+            <Pencil className="size-5" />
             글쓰기
           </Button>
         </div>
@@ -169,16 +159,16 @@ function PostList() {
             <button
               type="button"
               onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-1 px-2 outline-none"
+              className="flex items-center gap-1 px-2 font-normal outline-none"
             >
-              <span className="text-16 text-text-main font-medium">
+              <span className="text-text-main text-base">
                 {currentSortLabel}
               </span>
-              <span className="text-16 text-text-main">↓↑</span>
+              <ArrowUpDown className="size-5" />
             </button>
 
             {isSortOpen && (
-              <div className="absolute top-10 right-0 z-50 flex w-40 flex-col rounded-3xl border border-gray-100 bg-white p-2 shadow-xl outline-none">
+              <div className="absolute top-10 left-1/2 z-50 flex w-40 -translate-x-1/2 flex-col rounded-3xl border border-gray-100 bg-white p-2 shadow-xl outline-none">
                 {SORT_LIST.map((item) => (
                   <button
                     key={item.value}
