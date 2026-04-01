@@ -12,6 +12,8 @@ import {
   useDeleteComment,
   useUpdateComment,
 } from '../hooks/queries/useCommentQueries'
+import { useAccessTokenStore } from '../store/useAccessTokenStore'
+import { useToastStore } from '../store/useToastStore'
 
 export const CommentSection = () => {
   const { id } = useParams()
@@ -20,15 +22,24 @@ export const CommentSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
+  const { isValidToken } = useAccessTokenStore()
+  const { showToast } = useToastStore()
+
+  const handleBlocked = () => {
+    showToast(
+      'default',
+      '로그인 필요',
+      '로그인 한 사용자만 댓글 작성이 가능합니다'
+    )
+  }
+
   const { userInfo } = useUserInfoStore()
 
-  // MSW 서버에서 데이터 땡겨오기
   const { data, isLoading } = useComments(postId)
   const { mutate: createComment } = useCreateComment(postId)
   const { mutate: deleteComment } = useDeleteComment(postId)
   const { mutate: updateComment } = useUpdateComment(postId)
 
-  // 데이터가 아직 안 왔으면 로딩 표시
   if (isLoading) {
     return (
       <div className="py-10 text-center text-gray-500">
@@ -37,17 +48,15 @@ export const CommentSection = () => {
     )
   }
 
-  // 서버에서 받은 댓글 목록과 개수
   const rawComments = data?.results || []
   const commentCount = data?.count || 0
 
   const sortedComments = [...rawComments].sort((a, b) => {
     const timeA = new Date(a.created_at).getTime()
     const timeB = new Date(b.created_at).getTime()
-
-    // 최신순 오래된순 구현
     return sortOrder === 'latest' ? timeB - timeA : timeA - timeB
   })
+
   const handleDeleteConfirm = () => {
     if (deleteTargetId !== null) {
       deleteComment(deleteTargetId)
@@ -58,13 +67,23 @@ export const CommentSection = () => {
 
   return (
     <section>
-      {/*  댓글 입력창 */}
       <div className="mb-6">
-        {/* 등록 버튼 누르면 서버로 보냄 */}
-        <CommentInput onSubmit={(content) => createComment({ content })} />
+        <CommentInput
+          onSubmit={(content) => {
+            if (!isValidToken()) {
+              handleBlocked()
+              return
+            }
+            createComment({ content })
+          }}
+          onClick={() => {
+            if (!isValidToken()) {
+              handleBlocked()
+            }
+          }}
+        />
       </div>
 
-      {/* 댓글 헤더 및 정렬 */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MessageCircle className="h-5 w-5 text-gray-600" />
@@ -75,7 +94,6 @@ export const CommentSection = () => {
         <CommentSort sortOrder={sortOrder} onChange={setSortOrder} />
       </div>
 
-      {/* 댓글 리스트 */}
       <div className="flex flex-col">
         {sortedComments.map((comment) => (
           <CommentItem
@@ -94,6 +112,7 @@ export const CommentSection = () => {
           />
         ))}
       </div>
+
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

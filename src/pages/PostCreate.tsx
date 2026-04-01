@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import EditorHeader from '../components/editor/EditorHeader'
 import MarkdownEditor from '../components/editor/MarkdownEditor/MarkdownEditor'
 import { Button } from '../components/Button'
 import { useCreatePost, usePostCategories } from '../hooks'
 import type { CreatePostRequest } from '../types'
 import { categoryData } from '../mocks/data/categoryData'
+import { useAccessTokenStore } from '../store/useAccessTokenStore'
 
 const initialContent = ''
 
@@ -15,6 +16,20 @@ function PostCreate() {
   const [categoryId, setCategoryId] = useState<number | null>(null)
 
   const navigate = useNavigate()
+
+  const accessToken = useAccessTokenStore((state) => state.accessToken)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isHydrated) return
+    if (!accessToken) {
+      window.location.href = 'https://my.ozcodingschool.site/login'
+    }
+  }, [isHydrated, accessToken])
 
   const { data } = usePostCategories()
   const categories = data?.length ? data : categoryData
@@ -35,7 +50,6 @@ function PostCreate() {
 
     createPost(requestBody, {
       onSuccess: (res: any) => {
-        // 수정: 등록 성공 후 ID가 있으면 상세로, 없으면 목록(/posts)으로 이동
         const newId = res?.id || res?.post_id || res?.data?.id
 
         if (newId) {

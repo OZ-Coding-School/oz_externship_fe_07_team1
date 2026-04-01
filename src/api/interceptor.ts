@@ -9,10 +9,10 @@ instances.forEach((targetInstance) => {
   targetInstance.interceptors.request.use((config) => {
     const { accessToken } = useAccessTokenStore.getState()
 
-    if (accessToken) {
-      config.headers = config.headers ?? {}
-      config.headers.Authorization = `Bearer ${accessToken}`
-    }
+    if (!accessToken) return config
+
+    config.headers = config.headers ?? {}
+    config.headers.Authorization = `Bearer ${accessToken}`
 
     return config
   })
@@ -21,31 +21,43 @@ instances.forEach((targetInstance) => {
     (response) => response,
     async (error) => {
       const originalRequest = error.config
-      const { setAccessToken, clearAccessToken } =
+      const { accessToken, setAccessToken, clearAccessToken } =
         useAccessTokenStore.getState()
 
-      // 401 에러가 아니면 그대로 에러 처리 진행
       if (error.response?.status !== 401) {
         return Promise.reject(error)
       }
 
-      // 이미 한번 시도한 요청이면 종료 (무한 루프 방지)
+      if (
+        !accessToken ||
+        accessToken === 'null' ||
+        accessToken === 'undefined' ||
+        accessToken.trim() === ''
+      ) {
+        return Promise.reject(error)
+      }
+
       if (originalRequest?._retry) {
         clearAccessToken()
         return Promise.reject(error)
       }
       originalRequest._retry = true
 
-      // 토큰 재발급 요청에서 에러(리프레시 토큰 만료) 발생하면 리다이렉트
       if (originalRequest.url?.includes('accounts/me/refresh')) {
         clearAccessToken()
         window.location.href = 'https://my.ozcodingschool.site/login'
         return Promise.reject(error)
       }
 
-      // 401 에러 발생 시 토큰 재발급 시도
       try {
         const { access_token: newAccessToken } = await getRefreshTokenAPI()
+
+        const { accessToken: currentToken } = useAccessTokenStore.getState()
+
+        if (!currentToken) {
+          return Promise.reject(error)
+        }
+
         setAccessToken(newAccessToken)
 
         originalRequest.headers = originalRequest.headers ?? {}
